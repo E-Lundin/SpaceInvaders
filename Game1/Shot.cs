@@ -3,30 +3,26 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using System.Diagnostics;
 
 namespace SpaceInvaders
 {
-    class Shot
+    class Shot: Entity
     {
-        private int borderWidth;
-        private int borderHeight;
-        private Rectangle shot;
-        public bool shouldRemove = false;
+        public Shot(Vector2 pos, Vector2 velocity)
+        {
+            Velocity = velocity;
+            Position = pos;
+            image = Images.Shot;
+            Orientation = (float)Math.Atan2(velocity.Y, velocity.X);
+            Radius = 8;
 
-        public Shot(int gameWidth, int gameHeight, int x, int y)
-        {
-            borderWidth = gameWidth;
-            borderHeight = gameHeight;
-            shot = new Rectangle(x, y, 20, 20);
-        }
-        public void Draw(SpriteBatch spriteBatch, Texture2D image)
-        {
-            spriteBatch.Draw(image, shot, Color.Yellow);
         }
 
         private bool Collision()
         {
             bool collides = false;
+            /*
             if (shot.X >= (borderWidth - shot.Width))
                 collides = true;
             if (shot.X <= 0)
@@ -35,14 +31,21 @@ namespace SpaceInvaders
                 collides = true;
             if (shot.Y <= 0)
                 collides = true;
+            */
 
+            if (!Game.gameSize.Bounds.Contains(Position.ToPoint()))
+            {
+                collides = true;
+            }
             return collides;
         }
 
         public void Update()
         {
             if (!Collision()){
-                shot.Y -= 6;
+                if (Velocity.LengthSquared() > 0)
+                    Orientation = (float)Math.Atan2(Velocity.Y, Velocity.X);
+                Position += Velocity;
             }
             else
             {

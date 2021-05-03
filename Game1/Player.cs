@@ -6,19 +6,19 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
-    class Player
+    class Player: Entity
     {
         private int borderWidth;
         private int borderHeight;
-        public Rectangle ship = new Rectangle(100, 100, 20, 20);
         public List<Shot> Shots = new List<Shot>();
         private TimeSpan lastPlayerShot;
-        private static readonly TimeSpan ShootInterval = TimeSpan.FromMilliseconds(150);
+        public TimeSpan ShootInterval = TimeSpan.FromMilliseconds(100);
 
         public Player(int gameWidth, int gameHeight)
         {
             borderWidth = gameWidth;
             borderHeight = gameHeight;
+            image = Images.Ship;
         }
 
         public bool canShoot(GameTime gameTime)
@@ -32,39 +32,52 @@ namespace SpaceInvaders
             return false;
         }
 
-        public void Shoot()
+        public Vector2 GetAim(MouseState mouseState)
         {
-            Shot s = new Shot(borderWidth, borderHeight, ship.X + 1, ship.Y + 1);
+            Vector2 Mouse = new Vector2(mouseState.X, mouseState.Y);
+            Vector2 aim = Mouse - Position;
+            if (aim != Vector2.Zero)
+                aim.Normalize();
+
+            return aim;
+        }
+
+        public void Shoot(Vector2 position, Vector2 velocity)
+        {
+            //Vector2 Direction = Target - Position;
+            //if (Direction != Vector2.Zero)
+               //Direction.Normalize();
+            //Shot s = new Shot(borderWidth, borderHeight, ship.X + 1, ship.Y + 1);
+            Shot s = new Shot(position, velocity);
             Shots.Add(s);
         }
 
         private void enforceBorder()
         {
             // Assert position
-            if (ship.X >= (borderWidth - ship.Width))
-                ship.X = 5;
-            if (ship.X <= 0)
-                ship.X = (borderWidth - ship.Width - 5);
-            if (ship.Y >= (borderHeight - ship.Height))
-                ship.Y -= 5;
-            if (ship.Y <= 0)
-                ship.Y += 5;
+            if (Position.X >= (borderWidth - image.Width))
+                Position.X = 5;
+            if (Position.X <= 0)
+                Position.X = (borderWidth - image.Width - 5);
+            if (Position.Y >= (borderHeight - image.Height))
+                Position.Y -= 5;
+            if (Position.Y <= 0)
+                Position.Y += 5;
         }
         public void Move(KeyboardState keyboardState)
         {
             if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
-                ship.Y -= 5;
+                Position.Y -= 5;
+
             if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
-                ship.X -= 5;
+                Position.X -= 5;
+
             if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
-                ship.Y += 5;
+                Position.Y += 5;
+
             if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
-                ship.X += 5;
+                Position.X += 5;
             enforceBorder();
-        }
-        public void Draw(SpriteBatch spriteBatch, Texture2D image)
-        {
-            spriteBatch.Draw(image, ship, Color.Green);
         }
     }
 }

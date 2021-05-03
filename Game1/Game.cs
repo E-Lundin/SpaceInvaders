@@ -67,7 +67,7 @@ namespace SpaceInvaders
         private void checkCollisions()
         {
             // Check for collisions between all currently active entitites
-s            foreach (Enemy enemy in enemySpawner.Enemies)
+s           foreach (Enemy enemy in enemySpawner.Enemies)
             {   
                 // Check for collision with Bullets
                 foreach (Shot shot in player.Shots)

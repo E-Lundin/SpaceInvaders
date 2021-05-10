@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -10,16 +12,39 @@ namespace SpaceInvaders
     {
         private int borderWidth;
         private int borderHeight;
+        private int availableHearts;
+        public List<Heart> Hearts = new List<Heart>();
         public List<Shot> Shots = new List<Shot>();
         private TimeSpan lastPlayerShot;
         public TimeSpan ShootInterval = TimeSpan.FromMilliseconds(100);
-        public int hearts = 3;
 
         public Player(int gameWidth, int gameHeight)
         {
             borderWidth = gameWidth;
             borderHeight = gameHeight;
             image = Images.Ship;
+
+            for (int idx = 0; idx <= 3; idx++)
+            {
+                Hearts.Add(new Heart(idx));
+            }
+            availableHearts = Hearts.Count;
+        }
+
+        public int AvailableHearts
+        {
+            get {
+                int available = 0;
+                foreach (Heart heart in Hearts)
+                {
+                    if (!heart.IsConsumed)
+                    {
+                        available += 1;
+                    }
+                }
+                availableHearts = available;
+                return available;
+            }
         }
 
         public bool canShoot(GameTime gameTime)
@@ -51,6 +76,43 @@ namespace SpaceInvaders
             //Shot s = new Shot(borderWidth, borderHeight, ship.X + 1, ship.Y + 1);
             Shot s = new Shot(position, velocity);
             Shots.Add(s);
+        }
+
+        public void RemoveHeart()
+        {
+            if (!Hearts.Any())
+            {
+                return;
+            }
+
+            int idx = AvailableHearts - 1;
+            Heart heart = Hearts[idx];
+            if (availableHearts > 3)
+            {
+                Hearts.Remove(heart);
+            }
+            else
+            {
+                heart.IsConsumed = true;
+            }
+        }
+
+        public void AddHeart()
+        {
+            // Make the latest removed heart consumeable again:
+            if (availableHearts < 3)
+            {
+                int idx = availableHearts - 1;
+                Heart heart = Hearts[idx];
+                heart.IsConsumed = false;
+            }
+            else
+            {
+                // Add a new heart
+                int idx = availableHearts + 1;
+                Hearts.Add(new Heart(idx));
+
+            }
         }
 
         private void enforceBorder()

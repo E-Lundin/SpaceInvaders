@@ -89,8 +89,8 @@ namespace SpaceInvaders
                 if (isColliding(enemy, player))
                 {
                     enemy.shouldRemove = true;
-                    player.hearts -= 1;
-                    if (player.hearts == 0)
+                    player.RemoveHeart();
+                    if (player.AvailableHearts == 0)
                     {
                         currentGameState = GameState.GameOver;
                     }
@@ -179,6 +179,14 @@ namespace SpaceInvaders
 
                 case GameState.Playing:
                     player.Draw(_spriteBatch);
+
+                    if (player.AvailableHearts != 0)
+                    {
+                        foreach (Heart heart in player.Hearts)
+                        {
+                            heart.Draw(_spriteBatch);
+                        }
+                    }
 
                     if (player.Shots.Count != 0)
                     {

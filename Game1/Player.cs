@@ -117,6 +117,22 @@ namespace SpaceInvaders
 
             }
         }
+
+        public void consumeBooster(Booster booster)
+        {
+            //TODO implement Booster effects:
+            switch (booster.type)
+            {
+                case (BoosterType.AdditionalHeart):
+                    AddHeart();
+                    break;
+                case (BoosterType.FasterCannon):
+                    break;
+                case (BoosterType.ShotSpread):
+                    break;
+            }
+            return;
+        }
         
         public void AddPoints(int points)
         {

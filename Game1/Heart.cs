@@ -10,8 +10,6 @@ namespace SpaceInvaders
     {
         private bool isConsumed;
         private int identifier;
-        private Vector2 position;
-
 
         public Heart(int idx)
         {

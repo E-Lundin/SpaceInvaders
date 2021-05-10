@@ -13,6 +13,7 @@ namespace SpaceInvaders
         private SpriteBatch _spriteBatch;
         private Player player;
         private EnemySpawner enemySpawner;
+        private BoosterSpawner boosterSpawner;
         public static Viewport gameSize;
         static Random rand = new Random();
         //private static readonly TimeSpan ShootInterval = TimeSpan.FromMilliseconds(150);
@@ -49,6 +50,7 @@ namespace SpaceInvaders
             player = new Player(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             //enemy = new Enemy(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             enemySpawner = new EnemySpawner(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+            boosterSpawner = new BoosterSpawner(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             // TODO: use this.Content to load your game content here
         }
 
@@ -58,6 +60,8 @@ namespace SpaceInvaders
             player.Reset();
             // Reset enemies & Timespans
             enemySpawner.Reset();
+            // Reset boosters
+            boosterSpawner.Reset();
         }
 
         public static float NextFloat(float minValue, float maxValue)
@@ -115,6 +119,14 @@ namespace SpaceInvaders
                     }
                 }
             }
+            foreach (Booster booster in boosterSpawner.Boosters)
+            {
+                if (isColliding(booster, player))
+                {
+                    player.consumeBooster(booster);
+                    booster.shouldRemove = true;
+                }
+            }
         }
 
         protected override void Update(GameTime gameTime)
@@ -148,6 +160,11 @@ namespace SpaceInvaders
                     if (enemySpawner.canSpawn(gameTime))
                     {
                         enemySpawner.Spawn();
+                    }
+
+                    if (boosterSpawner.canSpawn(gameTime))
+                    {
+                        boosterSpawner.Spawn();
                     }
 
                     foreach (Shot shot in player.Shots)
@@ -222,6 +239,19 @@ namespace SpaceInvaders
                         enemySpawner.Enemies.RemoveAll(toRemove.Contains);
                     }
 
+                    if (boosterSpawner.Boosters.Count != 0)
+                    {
+                        HashSet<Booster> toRemove = new HashSet<Booster>();
+                        foreach (Booster booster in boosterSpawner.Boosters)
+                        {
+                            if (booster.shouldRemove)
+                                toRemove.Add(booster);
+                            else
+                                booster.Draw(_spriteBatch);
+                        }
+                        boosterSpawner.Boosters.RemoveAll(toRemove.Contains);
+                    }
+
                     string score = "Score:" + player.Score;
                     float textWidth = Images.Font.MeasureString(score).X;
                     Vector2 pos = new Vector2(gameSize.Width - textWidth - 5, 5);
@@ -229,7 +259,7 @@ namespace SpaceInvaders
                     break;
 
                 case GameState.GameOver:
-                    string message = "Game Over\n" + "Score: TODO\n" + "High Score: TODO\n" + "Press Enter to return to Menu.";
+                    string message = String.Format("Game Over\nScore: {0}\nHigh Score: TODO\nPress Enter to return to Menu.", player.Score);
                     Vector2 textSize = Images.Font.MeasureString(message);
                     Vector2 screenSize = new Vector2(gameSize.Width, gameSize.Height);
                     Vector2 position = (screenSize / 2 - textSize / 2);

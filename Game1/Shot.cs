@@ -22,17 +22,6 @@ namespace SpaceInvaders
         private bool Collision()
         {
             bool collides = false;
-            /*
-            if (shot.X >= (borderWidth - shot.Width))
-                collides = true;
-            if (shot.X <= 0)
-                collides = true;
-            if (shot.Y >= (borderHeight - shot.Height))
-                collides = true;
-            if (shot.Y <= 0)
-                collides = true;
-            */
-
             if (!Game.gameSize.Bounds.Contains(Position.ToPoint()))
             {
                 collides = true;

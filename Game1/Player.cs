@@ -13,6 +13,7 @@ namespace SpaceInvaders
         private int borderWidth;
         private int borderHeight;
         private int availableHearts;
+        private int score;
         public List<Heart> Hearts = new List<Heart>();
         public List<Shot> Shots = new List<Shot>();
         private TimeSpan lastPlayerShot;
@@ -24,7 +25,7 @@ namespace SpaceInvaders
             borderHeight = gameHeight;
             image = Images.Ship;
 
-            for (int idx = 0; idx <= 3; idx++)
+            for (int idx = 0; idx < 3; idx++)
             {
                 Hearts.Add(new Heart(idx));
             }
@@ -45,6 +46,12 @@ namespace SpaceInvaders
                 availableHearts = available;
                 return available;
             }
+        }
+
+        public int Score
+        {
+            get { return score; }
+            set { score = value; }
         }
 
         public bool canShoot(GameTime gameTime)
@@ -70,10 +77,6 @@ namespace SpaceInvaders
 
         public void Shoot(Vector2 position, Vector2 velocity)
         {
-            //Vector2 Direction = Target - Position;
-            //if (Direction != Vector2.Zero)
-               //Direction.Normalize();
-            //Shot s = new Shot(borderWidth, borderHeight, ship.X + 1, ship.Y + 1);
             Shot s = new Shot(position, velocity);
             Shots.Add(s);
         }
@@ -85,7 +88,7 @@ namespace SpaceInvaders
                 return;
             }
 
-            int idx = AvailableHearts - 1;
+            int idx = availableHearts - 1;
             Heart heart = Hearts[idx];
             if (availableHearts > 3)
             {
@@ -114,7 +117,24 @@ namespace SpaceInvaders
 
             }
         }
+        
+        public void AddPoints(int points)
+        {
+            Score += points;
+            // TODO implement multiplier;
+        }
+        public void Reset()
+        {
+            // Reset hearts
+            Hearts.Clear();
+            for (int idx = 0; idx < 3; idx++)
+            {
+                Hearts.Add(new Heart(idx));
+            }
+            // Reset score
+            score = 0;
 
+        }
         private void enforceBorder()
         {
             // Assert position

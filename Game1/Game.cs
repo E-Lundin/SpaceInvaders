@@ -82,6 +82,7 @@ namespace SpaceInvaders
                     {
                         enemy.shouldRemove = true;
                         shot.shouldRemove = true;
+                        player.AddPoints(5);
                     }
                 }
 
@@ -94,7 +95,6 @@ namespace SpaceInvaders
                     {
                         currentGameState = GameState.GameOver;
                     }
-                    // TODO: Implement punishment for Player & Enemy collision
                 }
 
                 // Check for collision between enemies
@@ -213,6 +213,11 @@ namespace SpaceInvaders
                         }
                         enemySpawner.Enemies.RemoveAll(toRemove.Contains);
                     }
+
+                    string score = "Score:" + player.Score;
+                    float textWidth = Images.Font.MeasureString(score).X;
+                    Vector2 pos = new Vector2(gameSize.Width - textWidth - 5, 5);
+                    _spriteBatch.DrawString(Images.Font, score, pos, Color.White);
                     break;
 
                 case GameState.GameOver:

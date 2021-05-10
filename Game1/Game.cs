@@ -114,10 +114,10 @@ namespace SpaceInvaders
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            KeyboardState keyboardState = Keyboard.GetState();
             switch (currentGameState)
             {
                 case GameState.Playing:
-                    KeyboardState keyboardState = Keyboard.GetState();
                     MouseState mouseState = Mouse.GetState();
                     player.Move(keyboardState);
                     Vector2 aim = player.GetAim(mouseState);
@@ -141,18 +141,7 @@ namespace SpaceInvaders
                     {
                         enemySpawner.Spawn();
                     }
-                    //enemy.GetPath(player.Position);
-                    //enemy.Update();
 
-                    /*
-                    if (keyboardState.IsKeyDown(Keys.Space) && (player.canShoot(gameTime)))
-                    {
-                        MouseState mouseState = Mouse.GetState();
-                        Vector2 Target = new Vector2(mouseState.X, mouseState.Y);
-
-                        player.Shoot(Target);
-                    }
-                    */
                     foreach (Shot shot in player.Shots)
                     {
                         shot.Update();
@@ -167,6 +156,11 @@ namespace SpaceInvaders
                     break;
 
                 case GameState.GameOver:
+                    if (keyboardState.IsKeyDown(Keys.Enter))
+                    {
+                        //TODO: Return to menu:
+                        currentGameState = GameState.Menu;
+                    }
                     break;
 
                 case GameState.Menu:
@@ -214,10 +208,11 @@ namespace SpaceInvaders
                     break;
 
                 case GameState.GameOver:
-                    if (player.hearts == 0)
-                    {
-                        _spriteBatch.DrawString(Images.Font, "Game Over", new Vector2(100, 100), Color.White);
-                    }
+                    string message = "Game Over\n" + "Score: TODO\n" + "High Score: TODO\n" + "Press Enter to return to Menu.";
+                    Vector2 textSize = Images.Font.MeasureString(message);
+                    Vector2 screenSize = new Vector2(gameSize.Width, gameSize.Height);
+                    Vector2 position = (screenSize / 2 - textSize / 2);
+                    _spriteBatch.DrawString(Images.Font, message, position, Color.White);
                     break;
             }
 

@@ -11,20 +11,27 @@ namespace SpaceInvaders
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        Texture2D shipImg;
         private Player player;
-        private Enemy enemy;
         private EnemySpawner enemySpawner;
         public static Viewport gameSize;
         static Random rand = new Random();
         //private static readonly TimeSpan ShootInterval = TimeSpan.FromMilliseconds(150);
         //private TimeSpan lastPlayerShot;
 
+        enum GameState
+        {
+            Menu = 0,
+            Playing = 1,
+            GameOver = 2,
+        }
+        GameState currentGameState;
+
         public Game()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            currentGameState = GameState.Playing;
             //_graphics.PreferredBackBufferHeight
         }
 
@@ -42,7 +49,6 @@ namespace SpaceInvaders
             player = new Player(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             //enemy = new Enemy(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             enemySpawner = new EnemySpawner(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
-
             // TODO: use this.Content to load your game content here
         }
 
@@ -68,7 +74,7 @@ namespace SpaceInvaders
         {
             // Check for collisions between all currently active entitites
             foreach (Enemy enemy in enemySpawner.Enemies)
-            {   
+            {
                 // Check for collision with Bullets
                 foreach (Shot shot in player.Shots)
                 {
@@ -83,6 +89,11 @@ namespace SpaceInvaders
                 if (isColliding(enemy, player))
                 {
                     enemy.shouldRemove = true;
+                    player.hearts -= 1;
+                    if (player.hearts == 0)
+                    {
+                        currentGameState = GameState.GameOver;
+                    }
                     // TODO: Implement punishment for Player & Enemy collision
                 }
 
@@ -103,53 +114,64 @@ namespace SpaceInvaders
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            KeyboardState keyboardState = Keyboard.GetState();
-            MouseState mouseState = Mouse.GetState();
-            player.Move(keyboardState);
-            Vector2 aim = player.GetAim(mouseState);
-
-            if (aim.LengthSquared() > 0 && player.canShoot(gameTime))
+            switch (currentGameState)
             {
-                float aimAngle = (float)Math.Atan2(aim.Y, aim.X);
-                Quaternion aimQuat = Quaternion.CreateFromYawPitchRoll(0, 0, aimAngle);
+                case GameState.Playing:
+                    KeyboardState keyboardState = Keyboard.GetState();
+                    MouseState mouseState = Mouse.GetState();
+                    player.Move(keyboardState);
+                    Vector2 aim = player.GetAim(mouseState);
 
-                float randomSpread = NextFloat(-0.04f, 0.04f) + NextFloat(-0.04f, 0.04f);
-                Vector2 vel = FromPolar(aimAngle + randomSpread, 11f);
+                    if (aim.LengthSquared() > 0 && player.canShoot(gameTime))
+                    {
+                        float aimAngle = (float)Math.Atan2(aim.Y, aim.X);
+                        Quaternion aimQuat = Quaternion.CreateFromYawPitchRoll(0, 0, aimAngle);
 
-                Vector2 offset = Vector2.Transform(new Vector2(25, -8), aimQuat);
-                player.Shoot(player.Position + offset, vel);
+                        float randomSpread = NextFloat(-0.04f, 0.04f) + NextFloat(-0.04f, 0.04f);
+                        Vector2 vel = FromPolar(aimAngle + randomSpread, 11f);
 
-                offset = Vector2.Transform(new Vector2(25, 8), aimQuat);
-                player.Shoot(player.Position + offset, vel);
+                        Vector2 offset = Vector2.Transform(new Vector2(25, -8), aimQuat);
+                        player.Shoot(player.Position + offset, vel);
+
+                        offset = Vector2.Transform(new Vector2(25, 8), aimQuat);
+                        player.Shoot(player.Position + offset, vel);
+                    }
+
+                    if (enemySpawner.canSpawn(gameTime))
+                    {
+                        enemySpawner.Spawn();
+                    }
+                    //enemy.GetPath(player.Position);
+                    //enemy.Update();
+
+                    /*
+                    if (keyboardState.IsKeyDown(Keys.Space) && (player.canShoot(gameTime)))
+                    {
+                        MouseState mouseState = Mouse.GetState();
+                        Vector2 Target = new Vector2(mouseState.X, mouseState.Y);
+
+                        player.Shoot(Target);
+                    }
+                    */
+                    foreach (Shot shot in player.Shots)
+                    {
+                        shot.Update();
+                    }
+
+                    foreach (Enemy enemy in enemySpawner.Enemies)
+                    {
+                        enemy.GetPath(player.Position);
+                        enemy.Update();
+                    }
+                    checkCollisions();
+                    break;
+
+                case GameState.GameOver:
+                    break;
+
+                case GameState.Menu:
+                    break;
             }
-
-            if (enemySpawner.canSpawn(gameTime))
-            {
-                enemySpawner.Spawn();
-            }
-            //enemy.GetPath(player.Position);
-            //enemy.Update();
-
-            /*
-            if (keyboardState.IsKeyDown(Keys.Space) && (player.canShoot(gameTime)))
-            {
-                MouseState mouseState = Mouse.GetState();
-                Vector2 Target = new Vector2(mouseState.X, mouseState.Y);
-
-                player.Shoot(Target);
-            }
-            */
-            foreach (Shot shot in player.Shots)
-            {
-                shot.Update();
-            }
-
-            foreach (Enemy enemy in enemySpawner.Enemies)
-            {
-                enemy.GetPath(player.Position);
-                enemy.Update();
-            }
-            checkCollisions();
             base.Update(gameTime);
         }
 
@@ -157,32 +179,46 @@ namespace SpaceInvaders
         {
             GraphicsDevice.Clear(Color.Black);
             _spriteBatch.Begin();
-            player.Draw(_spriteBatch);
 
-            if (player.Shots.Count != 0)
+            switch (currentGameState)
             {
-                HashSet<Shot> toRemove = new HashSet<Shot>();
-                foreach (Shot shot in player.Shots)
-                {
-                    if (shot.shouldRemove)
-                        toRemove.Add(shot);
-                    else
-                        shot.Draw(_spriteBatch);
-                }
-                player.Shots.RemoveAll(toRemove.Contains);
-            }
 
-            if (enemySpawner.Enemies.Count != 0)
-            {
-                HashSet<Enemy> toRemove = new HashSet<Enemy>();
-                foreach (Enemy enemy in enemySpawner.Enemies)
-                {
-                    if (enemy.shouldRemove)
-                        toRemove.Add(enemy);
-                    else
-                        enemy.Draw(_spriteBatch);
-                }
-                enemySpawner.Enemies.RemoveAll(toRemove.Contains);
+                case GameState.Playing:
+                    player.Draw(_spriteBatch);
+
+                    if (player.Shots.Count != 0)
+                    {
+                        HashSet<Shot> toRemove = new HashSet<Shot>();
+                        foreach (Shot shot in player.Shots)
+                        {
+                            if (shot.shouldRemove)
+                                toRemove.Add(shot);
+                            else
+                                shot.Draw(_spriteBatch);
+                        }
+                        player.Shots.RemoveAll(toRemove.Contains);
+                    }
+
+                    if (enemySpawner.Enemies.Count != 0)
+                    {
+                        HashSet<Enemy> toRemove = new HashSet<Enemy>();
+                        foreach (Enemy enemy in enemySpawner.Enemies)
+                        {
+                            if (enemy.shouldRemove)
+                                toRemove.Add(enemy);
+                            else
+                                enemy.Draw(_spriteBatch);
+                        }
+                        enemySpawner.Enemies.RemoveAll(toRemove.Contains);
+                    }
+                    break;
+
+                case GameState.GameOver:
+                    if (player.hearts == 0)
+                    {
+                        _spriteBatch.DrawString(Images.Font, "Game Over", new Vector2(100, 100), Color.White);
+                    }
+                    break;
             }
 
             _spriteBatch.End();

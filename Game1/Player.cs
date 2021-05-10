@@ -13,6 +13,7 @@ namespace SpaceInvaders
         public List<Shot> Shots = new List<Shot>();
         private TimeSpan lastPlayerShot;
         public TimeSpan ShootInterval = TimeSpan.FromMilliseconds(100);
+        public int hearts = 3;
 
         public Player(int gameWidth, int gameHeight)
         {

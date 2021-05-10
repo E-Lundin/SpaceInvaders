@@ -123,6 +123,7 @@ namespace SpaceInvaders
             Score += points;
             // TODO implement multiplier;
         }
+
         public void Reset()
         {
             // Reset hearts
@@ -133,6 +134,9 @@ namespace SpaceInvaders
             }
             // Reset score
             score = 0;
+            // Reset Shots
+            Shots.Clear();
+            lastPlayerShot = TimeSpan.Zero;
 
         }
         private void enforceBorder()

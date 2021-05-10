@@ -52,6 +52,14 @@ namespace SpaceInvaders
             // TODO: use this.Content to load your game content here
         }
 
+        public void Reset()
+        {
+            // Reset hearts, score & Shots
+            player.Reset();
+            // Reset enemies & Timespans
+            enemySpawner.Reset();
+        }
+
         public static float NextFloat(float minValue, float maxValue)
         {
             return (float)rand.NextDouble() * (maxValue - minValue) + minValue;

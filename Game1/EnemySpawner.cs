@@ -28,6 +28,12 @@ namespace SpaceInvaders
             Vector2 pos = new Vector2(X, Y);
             return pos;
         }
+        public void Reset()
+        {
+            SpawnInterval = TimeSpan.FromSeconds(3);
+            lastEnemySpawn = TimeSpan.Zero;
+            Enemies.Clear();
+        }
 
         public bool canSpawn(GameTime gameTime)
         {

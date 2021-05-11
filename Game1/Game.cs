@@ -16,8 +16,6 @@ namespace SpaceInvaders
         private BoosterSpawner boosterSpawner;
         public static Viewport gameSize;
         static Random rand = new Random();
-        //private static readonly TimeSpan ShootInterval = TimeSpan.FromMilliseconds(150);
-        //private TimeSpan lastPlayerShot;
 
         enum GameState
         {
@@ -62,16 +60,6 @@ namespace SpaceInvaders
             enemySpawner.Reset();
             // Reset boosters
             boosterSpawner.Reset();
-        }
-
-        public static float NextFloat(float minValue, float maxValue)
-        {
-            return (float)rand.NextDouble() * (maxValue - minValue) + minValue;
-        }
-
-        public static Vector2 FromPolar(float angle, float magnitude)
-        {
-            return magnitude * new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
         }
 
         private bool isColliding(Entity e1, Entity e2)
@@ -139,23 +127,7 @@ namespace SpaceInvaders
             {
                 case GameState.Playing:
                     MouseState mouseState = Mouse.GetState();
-                    player.Move(keyboardState);
-                    Vector2 aim = player.GetAim(mouseState);
-
-                    if (aim.LengthSquared() > 0 && player.canShoot(gameTime))
-                    {
-                        float aimAngle = (float)Math.Atan2(aim.Y, aim.X);
-                        Quaternion aimQuat = Quaternion.CreateFromYawPitchRoll(0, 0, aimAngle);
-
-                        float randomSpread = NextFloat(-0.04f, 0.04f) + NextFloat(-0.04f, 0.04f);
-                        Vector2 vel = FromPolar(aimAngle + randomSpread, 11f);
-
-                        Vector2 offset = Vector2.Transform(new Vector2(25, -8), aimQuat);
-                        player.Shoot(player.Position + offset, vel);
-
-                        offset = Vector2.Transform(new Vector2(25, 8), aimQuat);
-                        player.Shoot(player.Position + offset, vel);
-                    }
+                    player.Update(keyboardState, mouseState, gameTime);
 
                     if (enemySpawner.canSpawn(gameTime))
                     {

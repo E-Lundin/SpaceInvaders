@@ -12,7 +12,7 @@ namespace SpaceInvaders
     {
         AdditionalHeart = 0,
         FasterCannon,
-        ShotSpread
+        FasterShip
     }
     class Booster : Entity
     {
@@ -20,18 +20,17 @@ namespace SpaceInvaders
         public Booster(Vector2 pos, BoosterType _type)
         {
             type = _type;
+            Console.WriteLine(type);
             switch (type)
             {
                 case (BoosterType.AdditionalHeart):
                     image = Images.ActiveHeart;
                     break;
                 case (BoosterType.FasterCannon):
-                    //TODO
-                    image = Images.ActiveHeart;
+                    image = Images.CanonSpeedBoost;
                     break;
-                case (BoosterType.ShotSpread):
-                    //TODO
-                    image = Images.ActiveHeart;
+                case (BoosterType.FasterShip):
+                    image = Images.ShipSpeedBoost;
                     break;
             }
             Position = pos;

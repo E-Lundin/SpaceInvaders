@@ -15,7 +15,7 @@ namespace SpaceInvaders
         public List<Booster> Boosters = new List<Booster>();
         private Random random = new Random();
         private TimeSpan lastBoosterSpawn;
-        public TimeSpan SpawnInterval = TimeSpan.FromSeconds(30);
+        public TimeSpan SpawnInterval = TimeSpan.FromSeconds(5);
         private double SpawnChance = 0.2;
 
         public BoosterSpawner(int gameWidth, int gameHeight)
@@ -43,7 +43,6 @@ namespace SpaceInvaders
             bool canSpawn = gameTime.TotalGameTime - (TimeSpan)lastBoosterSpawn >= SpawnInterval
                 && (SpawnChance > random.NextDouble());
 
-            Debug.WriteLine(SpawnChance);
             if (SpawnChance < 0.9)
             {
                 //SpawnInterval = SpawnInterval.Subtract(TimeSpan.FromMilliseconds(0.1));

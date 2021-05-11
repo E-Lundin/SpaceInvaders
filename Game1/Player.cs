@@ -13,11 +13,20 @@ namespace SpaceInvaders
         private int borderWidth;
         private int borderHeight;
         private int availableHearts;
+        private int vel = 5;
         private int score;
         public List<Heart> Hearts = new List<Heart>();
         public List<Shot> Shots = new List<Shot>();
         private TimeSpan lastPlayerShot;
         public TimeSpan ShootInterval = TimeSpan.FromMilliseconds(100);
+        static Random rand = new Random();
+           
+
+        // Boosters
+        private float CanonSpeedBoosterTimer;
+        private bool CanonSpeedBoosterActive = false;
+        private float ShipSpeedBoosterTimer;
+        private bool ShipSpeedBoosterActive = false;
 
         public Player(int gameWidth, int gameHeight)
         {
@@ -57,6 +66,7 @@ namespace SpaceInvaders
         public bool canShoot(GameTime gameTime)
         {
             bool canShoot = gameTime.TotalGameTime - (TimeSpan)lastPlayerShot >= ShootInterval;
+
             if (canShoot)
             {
                 lastPlayerShot = gameTime.TotalGameTime;
@@ -105,30 +115,45 @@ namespace SpaceInvaders
             // Make the latest removed heart consumeable again:
             if (availableHearts < 3)
             {
-                int idx = availableHearts - 1;
+                int idx = availableHearts;
                 Heart heart = Hearts[idx];
                 heart.IsConsumed = false;
             }
             else
             {
                 // Add a new heart
-                int idx = availableHearts + 1;
+                int idx = availableHearts;
                 Hearts.Add(new Heart(idx));
 
             }
         }
 
+        public void CanonSpeedBooster()
+        {
+            CanonSpeedBoosterTimer = 4f;
+            ShootInterval = TimeSpan.FromMilliseconds(50);
+            CanonSpeedBoosterActive = true;
+        }
+
+        public void ShipSpeedBooster()
+        {
+            ShipSpeedBoosterTimer = 6f;
+            vel = 10;
+            ShipSpeedBoosterActive = true;
+        }
+
         public void consumeBooster(Booster booster)
         {
-            //TODO implement Booster effects:
             switch (booster.type)
             {
                 case (BoosterType.AdditionalHeart):
                     AddHeart();
                     break;
                 case (BoosterType.FasterCannon):
+                    CanonSpeedBooster();
                     break;
-                case (BoosterType.ShotSpread):
+                case (BoosterType.FasterShip):
+                    ShipSpeedBooster();
                     break;
             }
             return;
@@ -159,28 +184,91 @@ namespace SpaceInvaders
         {
             // Assert position
             if (Position.X >= (borderWidth - image.Width))
-                Position.X = 5;
+                Position.X = vel;
             if (Position.X <= 0)
                 Position.X = (borderWidth - image.Width - 5);
             if (Position.Y >= (borderHeight - image.Height))
-                Position.Y -= 5;
+                Position.Y -= vel;
             if (Position.Y <= 0)
-                Position.Y += 5;
+                Position.Y += vel;
         }
         public void Move(KeyboardState keyboardState)
         {
             if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
-                Position.Y -= 5;
+                Position.Y -= vel;
 
             if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
-                Position.X -= 5;
+                Position.X -= vel;
 
             if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
-                Position.Y += 5;
+                Position.Y += vel;
 
             if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
-                Position.X += 5;
+                Position.X += vel;
             enforceBorder();
         }
+
+        public void HandleBoosters(GameTime gameTime)
+        {
+            if (CanonSpeedBoosterActive)
+            {
+                CanonSpeedBoosterTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (CanonSpeedBoosterTimer <= 0f)
+                {
+                    CanonSpeedBoosterActive = false;
+                    CanonSpeedBoosterTimer = 4f;
+                    ShootInterval = TimeSpan.FromMilliseconds(100);
+                }
+
+            }
+
+            if (ShipSpeedBoosterActive)
+            {
+                ShipSpeedBoosterTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (ShipSpeedBoosterTimer <= 0f)
+                {
+                    ShipSpeedBoosterActive = false;
+                    ShipSpeedBoosterTimer = 6f;
+                    vel = 5;
+
+                }
+
+            }
+        }
+
+        public void Update(KeyboardState keyboardState, MouseState mouseState, GameTime gameTime)
+        {
+            Move(keyboardState);
+            HandleBoosters(gameTime);
+
+            Vector2 aim = GetAim(mouseState);
+            if (aim.LengthSquared() > 0 && canShoot(gameTime))
+            {
+                float aimAngle = (float)Math.Atan2(aim.Y, aim.X);
+                Quaternion aimQuat = Quaternion.CreateFromYawPitchRoll(0, 0, aimAngle);
+
+                float randomSpread = NextFloat(-0.04f, 0.04f) + NextFloat(-0.04f, 0.04f);
+                Vector2 vel = FromPolar(aimAngle + randomSpread, 11f);
+
+                Vector2 offset = Vector2.Transform(new Vector2(25, -8), aimQuat);
+                Shoot(Position + offset, vel);
+
+                offset = Vector2.Transform(new Vector2(25, 8), aimQuat);
+                Shoot(Position + offset, vel);
+            }
+
+        }
+
+        public static float NextFloat(float minValue, float maxValue)
+        {
+            return (float)rand.NextDouble() * (maxValue - minValue) + minValue;
+        }
+
+        public static Vector2 FromPolar(float angle, float magnitude)
+        {
+            return magnitude * new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+        }
     }
+
 }
+

@@ -59,7 +59,7 @@ namespace SpaceInvaders
 
         public void Spawn()
         {
-            int type = random.Next(3);
+            int type = random.Next(4);
             Vector2 position = getRandomLocation();
             Booster booster = new Booster(position, (BoosterType)type);
             Boosters.Add(booster);

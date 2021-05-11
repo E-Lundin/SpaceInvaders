@@ -12,7 +12,8 @@ namespace SpaceInvaders
     {
         AdditionalHeart = 0,
         FasterCannon,
-        FasterShip
+        FasterShip,
+        Invincible
     }
     class Booster : Entity
     {
@@ -31,27 +32,11 @@ namespace SpaceInvaders
                 case (BoosterType.FasterShip):
                     image = Images.ShipSpeedBoost;
                     break;
+                case (BoosterType.Invincible):
+                    image = Images.InvincibleBoost;
+                    break;
             }
             Position = pos;
-        }
-
-        private bool Collision()
-        {
-            bool collides = false;
-
-            // Check that enemy is still within border range
-            if (!Game.gameSize.Bounds.Contains(Position.ToPoint()))
-            {
-                collides = true;
-            }
-
-            return collides;
-        }
-
-        public void handleEnemyCollision(Enemy otherEnemy)
-        {
-            Vector2 distance = Position - otherEnemy.Position;
-            Velocity += 10 * distance / (distance.LengthSquared() + 1);
         }
     }
 }

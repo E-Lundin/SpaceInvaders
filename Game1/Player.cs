@@ -112,7 +112,7 @@ namespace SpaceInvaders
                 heart.IsConsumed = true;
             }
             // Set invincible for 0.3s
-            InvincibleBooster();
+            InvincibleBooster(0.3f);
         }
 
         public void AddHeart()
@@ -147,10 +147,15 @@ namespace SpaceInvaders
             ShipSpeedBoosterActive = true;
         }
 
-        public void InvincibleBooster()
+        public void InvincibleBooster(float duration, bool fromBooster = false)
         {
-            InvincibleBoosterTimer = 0.3f;
+            InvincibleBoosterTimer = duration;
             InvincibleBoosterActive = true;
+
+            if (fromBooster)
+            {
+                color = Color.CornflowerBlue;
+            }
         }
 
         public void consumeBooster(Booster booster)
@@ -165,6 +170,9 @@ namespace SpaceInvaders
                     break;
                 case (BoosterType.FasterShip):
                     ShipSpeedBooster();
+                    break;
+                case (BoosterType.Invincible):
+                    InvincibleBooster(2f, fromBooster: true);
                     break;
             }
             return;
@@ -252,6 +260,7 @@ namespace SpaceInvaders
                 if (InvincibleBoosterTimer <= 0f)
                 {
                     InvincibleBoosterActive = false;
+                    color = Color.White;
                 }
 
             }

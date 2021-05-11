@@ -16,6 +16,7 @@ namespace SpaceInvaders
         public static Texture2D InactiveHeart { get; private set; }
         public static Texture2D ShipSpeedBoost { get; private set; }
         public static Texture2D CanonSpeedBoost { get; private set; }
+        public static Texture2D InvincibleBoost { get; private set; }
         public static SpriteFont Font { get; private set; }
 
         public static void Load(ContentManager content)
@@ -28,6 +29,7 @@ namespace SpaceInvaders
             InactiveHeart = content.Load<Texture2D>("heart_inactive");
             ShipSpeedBoost = content.Load<Texture2D>("speedup");
             CanonSpeedBoost = content.Load<Texture2D>("fireball");
+            InvincibleBoost = content.Load<Texture2D>("star");
         }
     }
 }

@@ -25,8 +25,8 @@ namespace SpaceInvaders
         }
         private Vector2 getRandomLocation()
         {
-            int X = random.Next(borderWidth);
-            int Y = random.Next(borderHeight);
+            int X = random.Next(borderWidth - 15);
+            int Y = random.Next(borderHeight - 15);
             Vector2 pos = new Vector2(X, Y);
             return pos;
         }

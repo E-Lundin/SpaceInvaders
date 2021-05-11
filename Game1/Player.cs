@@ -14,7 +14,7 @@ namespace SpaceInvaders
         private int borderHeight;
         private int availableHearts;
         private int vel = 5;
-        private int score;
+        private int score = 0;
         public List<Heart> Hearts = new List<Heart>();
         public List<Shot> Shots = new List<Shot>();
         private TimeSpan lastPlayerShot;
@@ -138,7 +138,7 @@ namespace SpaceInvaders
         public void ShipSpeedBooster()
         {
             ShipSpeedBoosterTimer = 6f;
-            vel = 10;
+            vel = 8;
             ShipSpeedBoosterActive = true;
         }
 

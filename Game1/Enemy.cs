@@ -10,6 +10,8 @@ namespace SpaceInvaders
     {
         private int borderWidth;
         private int borderHeight;
+        private float DisabledTimer = 0.3f;
+        public bool isDisabled = true;
         public Rectangle ship = new Rectangle(100, 100, 20, 20);
 
         public Enemy(int gameWidth, int gameHeight, Vector2 pos)
@@ -49,8 +51,24 @@ namespace SpaceInvaders
             Vector2 distance = Position - otherEnemy.Position;
             Velocity += 10 * distance / (distance.LengthSquared() + 1);
         }
-        public void Update()
+
+        private void DisabledCooldown(GameTime gameTime)
         {
+            if (isDisabled)
+            {
+                DisabledTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (DisabledTimer <= 0f)
+                {
+                    isDisabled = false;
+                }
+
+            }
+
+        }
+        public void Update(GameTime gameTime)
+        {
+            DisabledCooldown(gameTime);
+
             if (!Collision())
             {
                 Position += Velocity;

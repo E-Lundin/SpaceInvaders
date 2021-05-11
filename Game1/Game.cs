@@ -87,7 +87,7 @@ namespace SpaceInvaders
                 }
 
                 // Check for collisions with the player
-                if (isColliding(enemy, player))
+                if (isColliding(enemy, player) && !enemy.isDisabled)
                 {
                     enemy.shouldRemove = true;
                     player.RemoveHeart();
@@ -131,7 +131,21 @@ namespace SpaceInvaders
 
                     if (enemySpawner.canSpawn(gameTime))
                     {
-                        enemySpawner.Spawn();
+                        int maxWaveSize;
+                        if (player.Score < 150)
+                            maxWaveSize = 10;
+                        else if (player.Score < 350)
+                            maxWaveSize = 15;
+                        else if (player.Score < 450)
+                            maxWaveSize = 20;
+                        else
+                            maxWaveSize = 25;
+
+                        int waveSize = rand.Next(maxWaveSize);
+                        for (int i = 0; i <= waveSize; i++)
+                        {
+                            enemySpawner.Spawn();
+                        }
                     }
 
                     if (boosterSpawner.canSpawn(gameTime))
@@ -147,7 +161,7 @@ namespace SpaceInvaders
                     foreach (Enemy enemy in enemySpawner.Enemies)
                     {
                         enemy.GetPath(player.Position);
-                        enemy.Update();
+                        enemy.Update(gameTime);
                     }
                     checkCollisions();
                     break;

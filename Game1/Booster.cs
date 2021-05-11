@@ -20,7 +20,6 @@ namespace SpaceInvaders
         public Booster(Vector2 pos, BoosterType _type)
         {
             type = _type;
-            Console.WriteLine(type);
             switch (type)
             {
                 case (BoosterType.AdditionalHeart):

@@ -40,7 +40,7 @@ namespace SpaceInvaders
             bool canSpawn = gameTime.TotalGameTime - (TimeSpan)lastEnemySpawn >= SpawnInterval;
             // Increase difficulty TODO: Player Score or GameTime?
             if (SpawnInterval.TotalMilliseconds > 500) {
-                SpawnInterval = SpawnInterval.Subtract(TimeSpan.FromMilliseconds(0.1));
+                SpawnInterval = SpawnInterval.Subtract(TimeSpan.FromMilliseconds(0.5));
             }
 
             if (canSpawn)

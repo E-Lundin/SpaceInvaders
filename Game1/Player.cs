@@ -27,6 +27,9 @@ namespace SpaceInvaders
         private bool CanonSpeedBoosterActive = false;
         private float ShipSpeedBoosterTimer;
         private bool ShipSpeedBoosterActive = false;
+        private float InvincibleBoosterTimer;
+        public bool InvincibleBoosterActive = false;
+
 
         public Player(int gameWidth, int gameHeight)
         {
@@ -108,6 +111,8 @@ namespace SpaceInvaders
             {
                 heart.IsConsumed = true;
             }
+            // Set invincible for 0.3s
+            InvincibleBooster();
         }
 
         public void AddHeart()
@@ -140,6 +145,12 @@ namespace SpaceInvaders
             ShipSpeedBoosterTimer = 6f;
             vel = 8;
             ShipSpeedBoosterActive = true;
+        }
+
+        public void InvincibleBooster()
+        {
+            InvincibleBoosterTimer = 0.3f;
+            InvincibleBoosterActive = true;
         }
 
         public void consumeBooster(Booster booster)
@@ -231,6 +242,16 @@ namespace SpaceInvaders
                     ShipSpeedBoosterTimer = 6f;
                     vel = 5;
 
+                }
+
+            }
+
+            if (InvincibleBoosterActive)
+            {
+                InvincibleBoosterTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (InvincibleBoosterTimer <= 0f)
+                {
+                    InvincibleBoosterActive = false;
                 }
 
             }

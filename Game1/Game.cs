@@ -87,7 +87,7 @@ namespace SpaceInvaders
                 }
 
                 // Check for collisions with the player
-                if (isColliding(enemy, player) && !enemy.isDisabled)
+                if (isColliding(enemy, player) && !enemy.isDisabled && !player.InvincibleBoosterActive)
                 {
                     enemy.shouldRemove = true;
                     player.RemoveHeart();

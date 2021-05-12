@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,9 +8,11 @@ namespace SpaceInvaders
 {
     class Menu
     {
-        // https://csharpskolan.se/article/monogame-meny/
+        // Inspiration från https://csharpskolan.se/article/monogame-meny/
         public List<MenuChoice> MenuChoices = new List<MenuChoice>();
         public string currentSelected = "NONE";
+        public KeyboardState CurrentState { get; set; }
+        public KeyboardState LastState { get; set; }
 
 
         public Menu(int gameWidth, int gameHeight)
@@ -28,14 +29,21 @@ namespace SpaceInvaders
                 startY += 70;
             }
         }
+        public bool KeyPressed(Keys key)
+        {
+            return CurrentState.IsKeyDown(key) && !LastState.IsKeyDown(key);
+        }
 
         public void Update(KeyboardState keyboardState, GameTime gameTime)
         {
-            if (keyboardState.IsKeyDown(Keys.Down))
+            LastState = CurrentState;
+            CurrentState = keyboardState;
+
+            if (KeyPressed(Keys.Down))
                 NextMenuChoice();
-            if (keyboardState.IsKeyDown(Keys.Up))
+            if (KeyPressed(Keys.Up))
                 PreviousMenuChoice();
-            if (keyboardState.IsKeyDown(Keys.Enter))
+            if (KeyPressed(Keys.Enter))
             {
                 var selectedChoice = MenuChoices.First(c => c.Selected);
                 currentSelected = selectedChoice.Text;
@@ -68,7 +76,9 @@ namespace SpaceInvaders
                 case "NONE":
                     foreach (MenuChoice choice in MenuChoices)
                     {
-                        spriteBatch.DrawString(Images.Font, choice.Text, choice.Position, Color.White);
+
+                        Color color = choice.Selected ? Color.Yellow: Color.White;
+                        spriteBatch.DrawString(Images.MenuFont, choice.Text, choice.Position, color);
                     }
                     break;
                 case "START":

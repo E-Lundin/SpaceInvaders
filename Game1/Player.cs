@@ -112,7 +112,7 @@ namespace SpaceInvaders
                 heart.IsConsumed = true;
             }
             // Set invincible for 0.3s
-            InvincibleBooster(0.3f);
+            InvincibleBooster(0.5f);
         }
 
         public void AddHeart()
@@ -198,7 +198,15 @@ namespace SpaceInvaders
             Shots.Clear();
             lastPlayerShot = TimeSpan.Zero;
 
-        }
+            // Reset Boosters
+            CanonSpeedBoosterTimer = 0f;
+            CanonSpeedBoosterActive = false;
+            ShipSpeedBoosterTimer = 0f;
+            ShipSpeedBoosterActive = false;
+            InvincibleBoosterTimer = 0f;
+            InvincibleBoosterActive = false;
+
+    }
         private void enforceBorder()
         {
             // Assert position

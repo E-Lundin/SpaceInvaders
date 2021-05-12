@@ -7,30 +7,32 @@ using System;
 
 namespace SpaceInvaders
 {
+    public enum GameState
+    {
+        Menu,
+        Playing,
+        GameOver
+    }
     public class Game : Microsoft.Xna.Framework.Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private Player player;
+        private Menu GameMenu;
         private EnemySpawner enemySpawner;
         private BoosterSpawner boosterSpawner;
         public static Viewport gameSize;
         static Random rand = new Random();
-
-        enum GameState
-        {
-            Menu = 0,
-            Playing = 1,
-            GameOver = 2,
-        }
-        GameState currentGameState;
+        public static GameState currentGameState;
+        public static Game self;
 
         public Game()
         {
+            self = this;
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            currentGameState = GameState.Playing;
+            currentGameState = GameState.Menu;
             //_graphics.PreferredBackBufferHeight
         }
 
@@ -49,6 +51,7 @@ namespace SpaceInvaders
             //enemy = new Enemy(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             enemySpawner = new EnemySpawner(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             boosterSpawner = new BoosterSpawner(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+            GameMenu = new Menu(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             // TODO: use this.Content to load your game content here
         }
 
@@ -167,7 +170,7 @@ namespace SpaceInvaders
                     break;
 
                 case GameState.GameOver:
-                    if (keyboardState.IsKeyDown(Keys.Enter))
+                    if (keyboardState.IsKeyDown(Keys.Space))
                     {
                         //TODO: Return to menu:
                         currentGameState = GameState.Menu;
@@ -175,6 +178,7 @@ namespace SpaceInvaders
                     break;
 
                 case GameState.Menu:
+                    GameMenu.Update(keyboardState, gameTime);
                     break;
             }
             base.Update(gameTime);
@@ -245,11 +249,15 @@ namespace SpaceInvaders
                     break;
 
                 case GameState.GameOver:
-                    string message = String.Format("Game Over\nScore: {0}\nHigh Score: TODO\nPress Enter to return to Menu.", player.Score);
+                    string message = String.Format("Game Over\nScore: {0}\nHigh Score: TODO\nPress Space to return to Menu.", player.Score);
                     Vector2 textSize = Images.Font.MeasureString(message);
                     Vector2 screenSize = new Vector2(gameSize.Width, gameSize.Height);
                     Vector2 position = (screenSize / 2 - textSize / 2);
                     _spriteBatch.DrawString(Images.Font, message, position, Color.White);
+                    break;
+
+                case GameState.Menu:
+                    GameMenu.Draw(_spriteBatch);
                     break;
             }
 

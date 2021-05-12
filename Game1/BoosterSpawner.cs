@@ -34,6 +34,7 @@ namespace SpaceInvaders
         {
             SpawnInterval = TimeSpan.FromSeconds(3);
             lastBoosterSpawn = TimeSpan.Zero;
+            SpawnChance = 0.2;
             Boosters.Clear();
         }
 

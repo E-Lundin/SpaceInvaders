@@ -199,6 +199,7 @@ namespace SpaceInvaders
             lastPlayerShot = TimeSpan.Zero;
 
             // Reset Boosters
+            vel = 5;
             CanonSpeedBoosterTimer = 0f;
             CanonSpeedBoosterActive = false;
             ShipSpeedBoosterTimer = 0f;

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace SpaceInvaders
 {
@@ -25,6 +26,7 @@ namespace SpaceInvaders
         static Random rand = new Random();
         public static GameState currentGameState;
         public static Game self;
+        private bool hasLoggedScore = false;
 
         public Game()
         {
@@ -57,12 +59,40 @@ namespace SpaceInvaders
 
         public void Reset()
         {
+            // Update Highscores
+            hasLoggedScore = false;
             // Reset hearts, score & Shots
             player.Reset();
             // Reset enemies & Timespans
             enemySpawner.Reset();
             // Reset boosters
             boosterSpawner.Reset();
+        }
+
+        private void LogScore(int score)
+        {
+            int minScore;
+            if (hasLoggedScore)
+            {
+                return;
+            }
+
+            if (HighScoreScreen.HighScores.Any() && HighScoreScreen.HighScores.Count >= 5)
+            {
+                var minEntry = HighScoreScreen.HighScores.OrderByDescending(s => s.Score).Last();
+                minScore = minEntry.Score;
+                if (score > minScore)
+                {
+                    HighScoreScreen.HighScores.Remove(minEntry);
+                    HighScoreScreen.HighScores.Add(new HighScore() { Score = score });
+                }
+            }
+            else
+            {
+                HighScoreScreen.HighScores.Add(new HighScore() { Score = score });
+            }
+            HighScoreScreen.self.SaveHighScores();
+            hasLoggedScore = true;
         }
 
         private bool isColliding(Entity e1, Entity e2)
@@ -170,6 +200,9 @@ namespace SpaceInvaders
                     break;
 
                 case GameState.GameOver:
+                    if (!hasLoggedScore)
+                        LogScore(player.Score);
+
                     if (keyboardState.IsKeyDown(Keys.Space))
                     {
                         //TODO: Return to menu:
@@ -249,7 +282,20 @@ namespace SpaceInvaders
                     break;
 
                 case GameState.GameOver:
-                    string message = String.Format("Game Over\nScore: {0}\nHigh Score: TODO\nPress Space to return to Menu.", player.Score);
+                    int highscore;
+                    if (HighScoreScreen.BiggestHighScore.HasValue)
+                    {
+                        highscore = (int)HighScoreScreen.BiggestHighScore;
+                        if (player.Score > highscore)
+                        {
+                            highscore = player.Score;
+                        }
+                    }
+                    else
+                    {
+                        highscore = player.Score;
+                    }
+                    string message = String.Format("Game Over\nScore: {0}\nHigh Score: {1}\nPress Space to return to Menu.", player.Score, highscore);
                     Vector2 textSize = Images.Font.MeasureString(message);
                     Vector2 screenSize = new Vector2(gameSize.Width, gameSize.Height);
                     Vector2 position = (screenSize / 2 - textSize / 2);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,11 +14,15 @@ namespace SpaceInvaders
         public string currentSelected = "NONE";
         public KeyboardState CurrentState { get; set; }
         public KeyboardState LastState { get; set; }
-
+        private HighScoreScreen Highscores = new HighScoreScreen();
+        public static Menu self;
 
         public Menu(int gameWidth, int gameHeight)
         {
+            self = this;
             MenuChoices.Add(new MenuChoice() { Text = "START", Selected = true });
+            MenuChoices.Add(new MenuChoice() { Text = "HIGHSCORES" });
+            MenuChoices.Add(new MenuChoice() { Text = "CHARACTER" });
             MenuChoices.Add(new MenuChoice() { Text = "QUIT" });
             float startY = 0.2f * gameHeight;
 
@@ -39,14 +44,26 @@ namespace SpaceInvaders
             LastState = CurrentState;
             CurrentState = keyboardState;
 
-            if (KeyPressed(Keys.Down))
-                NextMenuChoice();
-            if (KeyPressed(Keys.Up))
-                PreviousMenuChoice();
-            if (KeyPressed(Keys.Enter))
+            switch (currentSelected)
             {
-                var selectedChoice = MenuChoices.First(c => c.Selected);
-                currentSelected = selectedChoice.Text;
+                case "NONE":
+                    if (KeyPressed(Keys.Down))
+                        NextMenuChoice();
+                    if (KeyPressed(Keys.Up))
+                        PreviousMenuChoice();
+                    if (KeyPressed(Keys.Enter))
+                    {
+                        var selectedChoice = MenuChoices.First(c => c.Selected);
+                        currentSelected = selectedChoice.Text;
+                    }
+                    break;
+
+                case "HIGHSCORES":
+                    if (KeyPressed(Keys.Enter))
+                    {
+                        currentSelected = "NONE";
+                    }
+                    break;
             }
         }
 
@@ -85,6 +102,13 @@ namespace SpaceInvaders
                     Game.self.Reset();
                     Game.currentGameState = GameState.Playing;
                     currentSelected = "NONE";
+                    break;
+
+                case "HIGHSCORES":
+                    KeyboardState keyboardState = Keyboard.GetState();
+                    LastState = CurrentState;
+                    CurrentState = keyboardState;
+                    Highscores.Draw(spriteBatch);
                     break;
 
                 case "QUIT":

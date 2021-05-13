@@ -27,6 +27,8 @@ namespace SpaceInvaders
         public static GameState currentGameState;
         public static Game self;
         private bool hasLoggedScore = false;
+        public int gameWidth;
+        public int gameHeight;
 
         public Game()
         {
@@ -49,6 +51,8 @@ namespace SpaceInvaders
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             gameSize = GraphicsDevice.Viewport;
             Images.Load(Content);
+            gameWidth = _graphics.PreferredBackBufferWidth;
+            gameHeight = _graphics.PreferredBackBufferHeight;
             player = new Player(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             //enemy = new Enemy(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             enemySpawner = new EnemySpawner(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
@@ -67,6 +71,11 @@ namespace SpaceInvaders
             enemySpawner.Reset();
             // Reset boosters
             boosterSpawner.Reset();
+        }
+
+        public void SetPlayerImage(Texture2D skin)
+        {
+            player.image = skin;
         }
 
         private void LogScore(int score)
@@ -156,10 +165,10 @@ namespace SpaceInvaders
                 Exit();
 
             KeyboardState keyboardState = Keyboard.GetState();
+            MouseState mouseState = Mouse.GetState();
             switch (currentGameState)
             {
                 case GameState.Playing:
-                    MouseState mouseState = Mouse.GetState();
                     player.Update(keyboardState, mouseState, gameTime);
 
                     if (enemySpawner.canSpawn(gameTime))

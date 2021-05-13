@@ -83,7 +83,6 @@ namespace SpaceInvaders
 
         public void SaveHighScores()
         {
-            Debug.WriteLine("SAVING");
             using (XmlWriter writer = XmlWriter.Create("highscores.xml"))
             {
                 XmlSerializer ser = new XmlSerializer(HighScores.GetType());

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,13 +36,36 @@ namespace SpaceInvaders
         {
             borderWidth = gameWidth;
             borderHeight = gameHeight;
-            image = Images.Ship;
+            image = LoadImage();
 
             for (int idx = 0; idx < 3; idx++)
             {
                 Hearts.Add(new Heart(idx));
             }
             availableHearts = Hearts.Count;
+        }
+
+        static Texture2D LoadImage()
+        {
+            string imageName;
+
+            if (File.Exists("skin.txt"))
+            {
+                imageName = File.ReadAllText("skin.txt");
+            }
+            else
+            {
+                imageName =  "default";
+            }
+
+            return imageName switch
+            {
+                "default" => Images.Ship,
+                "shipred" => Images.ShipRed,
+                "ship1" => Images.Ship1,
+                "ship2" => Images.Ship2,
+                _ => Images.Ship,
+            };
         }
 
         public int AvailableHearts

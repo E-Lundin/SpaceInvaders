@@ -5,7 +5,7 @@ namespace SpaceInvaders
 {
     abstract class Entity
     {
-        protected Texture2D image;
+        public Texture2D image;
         protected Color color = Color.White;
         public Vector2 Position, Velocity;
         public float Orientation;

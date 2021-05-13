@@ -15,6 +15,7 @@ namespace SpaceInvaders
         public KeyboardState CurrentState { get; set; }
         public KeyboardState LastState { get; set; }
         private HighScoreScreen Highscores = new HighScoreScreen();
+        private CharacterCustomization CharacterScreen = new CharacterCustomization();
         public static Menu self;
 
         public Menu(int gameWidth, int gameHeight)
@@ -64,6 +65,15 @@ namespace SpaceInvaders
                         currentSelected = "NONE";
                     }
                     break;
+
+                case "CHARACTER":
+                    if (KeyPressed(Keys.Enter))
+                    {
+                        currentSelected = "NONE";
+                    }
+                    MouseState mouseState = Mouse.GetState();
+                    CharacterScreen.Update(keyboardState, mouseState, gameTime);
+                    break;
             }
         }
 
@@ -109,6 +119,10 @@ namespace SpaceInvaders
                     LastState = CurrentState;
                     CurrentState = keyboardState;
                     Highscores.Draw(spriteBatch);
+                    break;
+
+                case "CHARACTER":
+                    CharacterScreen.Draw(spriteBatch);
                     break;
 
                 case "QUIT":

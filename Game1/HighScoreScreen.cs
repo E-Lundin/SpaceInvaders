@@ -14,6 +14,12 @@ namespace SpaceInvaders
     {
         public static HighScoreScreen self;
         public static List<HighScore> HighScores = new List<HighScore>();
+
+        public HighScoreScreen()
+        {
+            self = this;
+            LoadHighScores();
+        }
         public static int? BiggestHighScore
         {
             get
@@ -29,12 +35,6 @@ namespace SpaceInvaders
                 }
             }
 
-        }
-
-        public HighScoreScreen()
-        {
-            self = this;
-            LoadHighScores();
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -90,6 +90,26 @@ namespace SpaceInvaders
                 writer.Flush();
                 writer.Close();
             }
+        }
+        public void LogScore(int score)
+        {
+            int minScore;
+
+            if (HighScores.Any() && HighScores.Count >= 5)
+            {
+                var minEntry = HighScores.OrderByDescending(s => s.Score).Last();
+                minScore = minEntry.Score;
+                if (score > minScore)
+                {
+                    HighScores.Remove(minEntry);
+                    HighScores.Add(new HighScore() { Score = score });
+                }
+            }
+            else
+            {
+                HighScores.Add(new HighScore() { Score = score });
+            }
+            SaveHighScores();
         }
     }
 }

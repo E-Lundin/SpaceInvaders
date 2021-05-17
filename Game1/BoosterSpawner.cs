@@ -10,23 +10,17 @@ namespace SpaceInvaders
     //PowerUp p = new PowerUp((PowerUpType)type, this);
     class BoosterSpawner
     {
-        private int borderWidth;
-        private int borderHeight;
         public List<Booster> Boosters = new List<Booster>();
         private Random random = new Random();
         private TimeSpan lastBoosterSpawn;
         public TimeSpan SpawnInterval = TimeSpan.FromSeconds(7);
         private double SpawnChance = 0.2;
 
-        public BoosterSpawner(int gameWidth, int gameHeight)
-        {
-            borderWidth = gameWidth;
-            borderHeight = gameHeight;
-        }
+        public BoosterSpawner() { }
         private Vector2 getRandomLocation()
         {
-            int X = random.Next(borderWidth - 15);
-            int Y = random.Next(borderHeight - 15);
+            int X = random.Next(Game.self.gameWidth - 15);
+            int Y = random.Next(Game.self.gameHeight - 15);
             Vector2 pos = new Vector2(X, Y);
             return pos;
         }

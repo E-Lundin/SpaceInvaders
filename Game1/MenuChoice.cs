@@ -16,6 +16,8 @@ namespace SpaceInvaders
         public string Text { get; set; }
         public bool Selected { get; set; }
 
+        public MenuState State { get; set; }
+
 
     }
 }

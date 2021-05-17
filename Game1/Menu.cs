@@ -7,31 +7,39 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
+    public enum MenuState
+    {
+        Menu,
+        Play,
+        Highscore,
+        Character,
+        Quit
+    }
     class Menu
     {
         // Inspiration från https://csharpskolan.se/article/monogame-meny/
         public List<MenuChoice> MenuChoices = new List<MenuChoice>();
-        public string currentSelected = "NONE";
+        private MenuState currentMenuState = MenuState.Menu;
         public KeyboardState CurrentState { get; set; }
         public KeyboardState LastState { get; set; }
         private HighScoreScreen Highscores = new HighScoreScreen();
         private CharacterCustomization CharacterScreen = new CharacterCustomization();
         public static Menu self;
 
-        public Menu(int gameWidth, int gameHeight)
+        public Menu()
         {
             self = this;
-            MenuChoices.Add(new MenuChoice() { Text = "START", Selected = true });
-            MenuChoices.Add(new MenuChoice() { Text = "HIGHSCORES" });
-            MenuChoices.Add(new MenuChoice() { Text = "CHARACTER" });
-            MenuChoices.Add(new MenuChoice() { Text = "QUIT" });
-            float startY = 0.2f * gameHeight;
+            MenuChoices.Add(new MenuChoice() { Text = "START", State = MenuState.Play, Selected = true });
+            MenuChoices.Add(new MenuChoice() { Text = "HIGHSCORES", State = MenuState.Highscore });
+            MenuChoices.Add(new MenuChoice() { Text = "CHARACTER", State = MenuState.Character });
+            MenuChoices.Add(new MenuChoice() { Text = "QUIT", State = MenuState.Quit });
+            float startY = 0.2f * Game.self.gameHeight;
 
             foreach (MenuChoice choice in MenuChoices)
             {
                 Vector2 size = Images.Font.MeasureString(choice.Text);
                 choice.Y = startY;
-                choice.X = gameWidth / 2.0f - size.X / 2;
+                choice.X = Game.self.gameWidth / 2.0f - size.X / 2;
                 startY += 70;
             }
         }
@@ -40,14 +48,14 @@ namespace SpaceInvaders
             return CurrentState.IsKeyDown(key) && !LastState.IsKeyDown(key);
         }
 
-        public void Update(KeyboardState keyboardState, GameTime gameTime)
+        public void Update(KeyboardState keyboardState, MouseState mouseState, GameTime gameTime)
         {
             LastState = CurrentState;
             CurrentState = keyboardState;
 
-            switch (currentSelected)
+            switch (currentMenuState)
             {
-                case "NONE":
+                case MenuState.Menu:
                     if (KeyPressed(Keys.Down))
                         NextMenuChoice();
                     if (KeyPressed(Keys.Up))
@@ -55,23 +63,22 @@ namespace SpaceInvaders
                     if (KeyPressed(Keys.Enter))
                     {
                         var selectedChoice = MenuChoices.First(c => c.Selected);
-                        currentSelected = selectedChoice.Text;
+                        currentMenuState = selectedChoice.State;
                     }
                     break;
 
-                case "HIGHSCORES":
+                case MenuState.Highscore:
                     if (KeyPressed(Keys.Enter))
                     {
-                        currentSelected = "NONE";
+                        currentMenuState = MenuState.Menu;
                     }
                     break;
 
-                case "CHARACTER":
+                case MenuState.Character:
                     if (KeyPressed(Keys.Enter))
                     {
-                        currentSelected = "NONE";
+                        currentMenuState = MenuState.Menu;
                     }
-                    MouseState mouseState = Mouse.GetState();
                     CharacterScreen.Update(keyboardState, mouseState, gameTime);
                     break;
             }
@@ -99,8 +106,8 @@ namespace SpaceInvaders
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            switch (currentSelected) {
-                case "NONE":
+            switch (currentMenuState) {
+                case MenuState.Menu:
                     foreach (MenuChoice choice in MenuChoices)
                     {
 
@@ -108,24 +115,24 @@ namespace SpaceInvaders
                         spriteBatch.DrawString(Images.MenuFont, choice.Text, choice.Position, color);
                     }
                     break;
-                case "START":
+                case MenuState.Play:
                     Game.self.Reset();
-                    Game.currentGameState = GameState.Playing;
-                    currentSelected = "NONE";
+                    Game.CurrentGameState = GameState.Playing;
+                    currentMenuState = MenuState.Menu;
                     break;
 
-                case "HIGHSCORES":
+                case MenuState.Highscore:
                     KeyboardState keyboardState = Keyboard.GetState();
                     LastState = CurrentState;
                     CurrentState = keyboardState;
                     Highscores.Draw(spriteBatch);
                     break;
 
-                case "CHARACTER":
+                case MenuState.Character:
                     CharacterScreen.Draw(spriteBatch);
                     break;
 
-                case "QUIT":
+                case MenuState.Quit:
                     Game.self.Exit();
                     break;
             }

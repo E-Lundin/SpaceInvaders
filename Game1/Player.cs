@@ -11,11 +11,9 @@ namespace SpaceInvaders
 {
     class Player: Entity
     {
-        private int borderWidth;
-        private int borderHeight;
-        private int availableHearts;
-        private int vel = 5;
-        private int score = 0;
+        private int _availableHearts;
+        private int _vel = 5;
+        private int _score = 0;
         public List<Heart> Hearts = new List<Heart>();
         public List<Shot> Shots = new List<Shot>();
         private TimeSpan lastPlayerShot;
@@ -24,25 +22,23 @@ namespace SpaceInvaders
            
 
         // Boosters
-        private float CanonSpeedBoosterTimer;
-        private bool CanonSpeedBoosterActive = false;
-        private float ShipSpeedBoosterTimer;
-        private bool ShipSpeedBoosterActive = false;
-        private float InvincibleBoosterTimer;
+        private float canonSpeedBoosterTimer;
+        private bool canonSpeedBoosterActive = false;
+        private float shipSpeedBoosterTimer;
+        private bool shipSpeedBoosterActive = false;
+        private float invincibleBoosterTimer;
         public bool InvincibleBoosterActive = false;
 
 
-        public Player(int gameWidth, int gameHeight)
+        public Player()
         {
-            borderWidth = gameWidth;
-            borderHeight = gameHeight;
             image = LoadImage();
 
             for (int idx = 0; idx < 3; idx++)
             {
                 Hearts.Add(new Heart(idx));
             }
-            availableHearts = Hearts.Count;
+            _availableHearts = Hearts.Count;
         }
 
         static Texture2D LoadImage()
@@ -79,15 +75,15 @@ namespace SpaceInvaders
                         available += 1;
                     }
                 }
-                availableHearts = available;
+                _availableHearts = available;
                 return available;
             }
         }
 
         public int Score
         {
-            get { return score; }
-            set { score = value; }
+            get { return _score; }
+            set { _score = value; }
         }
 
         public bool canShoot(GameTime gameTime)
@@ -125,9 +121,9 @@ namespace SpaceInvaders
                 return;
             }
 
-            int idx = availableHearts - 1;
+            int idx = _availableHearts - 1;
             Heart heart = Hearts[idx];
-            if (availableHearts > 3)
+            if (_availableHearts > 3)
             {
                 Hearts.Remove(heart);
             }
@@ -142,16 +138,16 @@ namespace SpaceInvaders
         public void AddHeart()
         {
             // Make the latest removed heart consumeable again:
-            if (availableHearts < 3)
+            if (_availableHearts < 3)
             {
-                int idx = availableHearts;
+                int idx = _availableHearts;
                 Heart heart = Hearts[idx];
                 heart.IsConsumed = false;
             }
             else
             {
                 // Add a new heart
-                int idx = availableHearts;
+                int idx = _availableHearts;
                 Hearts.Add(new Heart(idx));
 
             }
@@ -159,21 +155,21 @@ namespace SpaceInvaders
 
         public void CanonSpeedBooster()
         {
-            CanonSpeedBoosterTimer = 4f;
+            canonSpeedBoosterTimer = 4f;
             ShootInterval = TimeSpan.FromMilliseconds(50);
-            CanonSpeedBoosterActive = true;
+            canonSpeedBoosterActive = true;
         }
 
         public void ShipSpeedBooster()
         {
-            ShipSpeedBoosterTimer = 6f;
-            vel = 8;
-            ShipSpeedBoosterActive = true;
+            shipSpeedBoosterTimer = 6f;
+            _vel = 8;
+            shipSpeedBoosterActive = true;
         }
 
         public void InvincibleBooster(float duration, bool fromBooster = false)
         {
-            InvincibleBoosterTimer = duration;
+            invincibleBoosterTimer = duration;
             InvincibleBoosterActive = true;
 
             if (fromBooster)
@@ -216,72 +212,72 @@ namespace SpaceInvaders
             {
                 Hearts.Add(new Heart(idx));
             }
-            // Reset score
-            score = 0;
+            // Reset _score
+            _score = 0;
             // Reset Shots
             Shots.Clear();
             lastPlayerShot = TimeSpan.Zero;
 
             // Reset Boosters
-            vel = 5;
-            CanonSpeedBoosterTimer = 0f;
-            CanonSpeedBoosterActive = false;
-            ShipSpeedBoosterTimer = 0f;
-            ShipSpeedBoosterActive = false;
-            InvincibleBoosterTimer = 0f;
+            _vel = 5;
+            canonSpeedBoosterTimer = 0f;
+            canonSpeedBoosterActive = false;
+            shipSpeedBoosterTimer = 0f;
+            shipSpeedBoosterActive = false;
+            invincibleBoosterTimer = 0f;
             InvincibleBoosterActive = false;
 
     }
         private void enforceBorder()
         {
             // Assert position
-            if (Position.X >= (borderWidth - image.Width))
-                Position.X = vel;
+            if (Position.X >= (Game.self.gameWidth - image.Width))
+                Position.X = _vel;
             if (Position.X <= 0)
-                Position.X = (borderWidth - image.Width - 5);
-            if (Position.Y >= (borderHeight - image.Height))
-                Position.Y -= vel;
+                Position.X = (Game.self.gameWidth - image.Width - 5);
+            if (Position.Y >= (Game.self.gameHeight - image.Height))
+                Position.Y -= _vel;
             if (Position.Y <= 0)
-                Position.Y += vel;
+                Position.Y += _vel;
         }
         public void Move(KeyboardState keyboardState)
         {
             if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
-                Position.Y -= vel;
+                Position.Y -= _vel;
 
             if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
-                Position.X -= vel;
+                Position.X -= _vel;
 
             if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
-                Position.Y += vel;
+                Position.Y += _vel;
 
             if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
-                Position.X += vel;
+                Position.X += _vel;
             enforceBorder();
         }
 
         public void HandleBoosters(GameTime gameTime)
         {
-            if (CanonSpeedBoosterActive)
+            if (canonSpeedBoosterActive)
             {
-                CanonSpeedBoosterTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (CanonSpeedBoosterTimer <= 0f)
+                canonSpeedBoosterTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (canonSpeedBoosterTimer <= 0f)
                 {
-                    CanonSpeedBoosterActive = false;
-                    CanonSpeedBoosterTimer = 4f;
+                    canonSpeedBoosterActive = false;
+                    canonSpeedBoosterTimer = 4f;
                     ShootInterval = TimeSpan.FromMilliseconds(100);
                 }
 
             }
 
-            if (ShipSpeedBoosterActive)
+            if (shipSpeedBoosterActive)
             {
-                ShipSpeedBoosterTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (ShipSpeedBoosterTimer <= 0f)
+                shipSpeedBoosterTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (shipSpeedBoosterTimer <= 0f)
                 {
-                    ShipSpeedBoosterActive = false;
-                    ShipSpeedBoosterTimer = 6f;
-                    vel = 5;
+                    shipSpeedBoosterActive = false;
+                    shipSpeedBoosterTimer = 6f;
+                    _vel = 5;
 
                 }
 
@@ -289,8 +285,8 @@ namespace SpaceInvaders
 
             if (InvincibleBoosterActive)
             {
-                InvincibleBoosterTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (InvincibleBoosterTimer <= 0f)
+                invincibleBoosterTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (invincibleBoosterTimer <= 0f)
                 {
                     InvincibleBoosterActive = false;
                     color = Color.White;

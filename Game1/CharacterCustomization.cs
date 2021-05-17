@@ -11,7 +11,7 @@ namespace SpaceInvaders
 {
     class CharacterCustomization
     {
-        private Player Ship = new Player(Game.self.gameWidth, Game.self.gameHeight);
+        private Player Ship = new Player();
         private List<Button> Buttons = new List<Button>();
         private List<Skin> Skins = new List<Skin>();
         private Button SaveButton;
@@ -108,7 +108,7 @@ namespace SpaceInvaders
         {
             Skin selectedSkin = Skins.First(s => s.Selected);
             string skinName = selectedSkin.Name;
-            Game.self.SetPlayerImage(selectedSkin.Image);
+            EntityManager.self.SetPlayerImage(selectedSkin.Image);
             File.WriteAllText("skin.txt", skinName);
 
         }

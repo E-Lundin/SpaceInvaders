@@ -9,22 +9,17 @@ namespace SpaceInvaders
 {
     class EnemySpawner
     {
-        private int borderWidth;
-        private int borderHeight;
         public List<Enemy> Enemies = new List<Enemy>();
         private Random random = new Random();
         private TimeSpan lastEnemySpawn;
         public TimeSpan SpawnInterval = TimeSpan.FromSeconds(3);
 
-        public EnemySpawner(int gameWidth, int gameHeight)
-        {
-            borderWidth = gameWidth;
-            borderHeight = gameHeight;
-        }
+        public EnemySpawner() { }
+
         private Vector2 getRandomLocation()
         {
-            int X = random.Next(borderWidth);
-            int Y = random.Next(borderHeight);
+            int X = random.Next(Game.self.gameWidth);
+            int Y = random.Next(Game.self.gameHeight);
             Vector2 pos = new Vector2(X, Y);
             return pos;
         }
@@ -54,7 +49,7 @@ namespace SpaceInvaders
         public void Spawn()
         {
             Vector2 position = getRandomLocation();
-            Enemy enemy = new Enemy(borderWidth, borderHeight, position);
+            Enemy enemy = new Enemy(Game.self.gameWidth, Game.self.gameHeight, position);
             Enemies.Add(enemy);
         }
 

@@ -15,6 +15,7 @@ namespace SpaceInvaders
         public static Texture2D Ship2 { get; private set; }
         public static Texture2D Shot { get; private set; }
         public static Texture2D Enemy { get; private set; }
+        public static Texture2D Enemy2 { get; private set; }
         public static Texture2D ActiveHeart { get; private set; }
         public static Texture2D InactiveHeart { get; private set; }
         public static Texture2D ShipSpeedBoost { get; private set; }
@@ -35,6 +36,7 @@ namespace SpaceInvaders
             Ship2 = content.Load<Texture2D>("ship2");
             Shot = content.Load<Texture2D>("bullet");
             Enemy = content.Load<Texture2D>("enemy1");
+            Enemy2 = content.Load<Texture2D>("enemy2");
             Font = content.Load<SpriteFont>("font");
             MenuFont = content.Load<SpriteFont>("menufont");
             ActiveHeart = content.Load<Texture2D>("heart_active");

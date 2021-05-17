@@ -48,8 +48,9 @@ namespace SpaceInvaders
 
         public void Spawn()
         {
+            int type = random.Next(2);
             Vector2 position = getRandomLocation();
-            Enemy enemy = new Enemy(Game.self.gameWidth, Game.self.gameHeight, position);
+            Enemy enemy = new Enemy(position, (EnemyType)type);
             Enemies.Add(enemy);
         }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -9,9 +8,9 @@ namespace SpaceInvaders
 {
     class EntityManager
     {
-        public Player player;
-        public static EnemySpawner enemySpawner;
-        public static BoosterSpawner boosterSpawner;
+        public Player Player;
+        private EnemySpawner enemySpawner;
+        private BoosterSpawner boosterSpawner;
         static Random rand = new Random();
         public static EntityManager self;
 
@@ -19,14 +18,14 @@ namespace SpaceInvaders
         public EntityManager()
         {
             self = this;
-            player = new Player();
+            Player = new Player();
             enemySpawner = new EnemySpawner();
             boosterSpawner = new BoosterSpawner();
         }
         public void Reset()
         {
             // Reset hearts, score & Shots
-            player.Reset();
+            Player.Reset();
             // Reset enemies & Timespans
             enemySpawner.Reset();
             // Reset boosters
@@ -34,10 +33,10 @@ namespace SpaceInvaders
         }
         public void SetPlayerImage(Texture2D skin)
         {
-            player.image = skin;
+            Player.image = skin;
         }
 
-        private bool isColliding(Entity e1, Entity e2)
+        private bool IsColliding(Entity e1, Entity e2)
         {
             float radius = e1.Radius + e2.Radius;
             bool overlapping = Vector2.DistanceSquared(e1.Position, e2.Position) < radius * radius;
@@ -51,22 +50,22 @@ namespace SpaceInvaders
             foreach (Enemy enemy in enemySpawner.Enemies)
             {
                 // Check for collision with Bullets
-                foreach (Shot shot in player.Shots)
+                foreach (Shot shot in Player.Shots)
                 {
-                    if (isColliding(shot, enemy))
+                    if (IsColliding(shot, enemy))
                     {
                         enemy.shouldRemove = true;
                         shot.shouldRemove = true;
-                        player.AddPoints(5);
+                        Player.AddPoints(5);
                     }
                 }
 
-                // Check for collisions with the player
-                if (isColliding(enemy, player) && !enemy.isDisabled && !player.InvincibleBoosterActive)
+                // Check for collisions with the Player
+                if (IsColliding(enemy, Player) && !enemy.isDisabled && !Player.InvincibleBoosterActive)
                 {
                     enemy.shouldRemove = true;
-                    player.RemoveHeart();
-                    if (player.AvailableHearts == 0)
+                    Player.RemoveHeart();
+                    if (Player.AvailableHearts == 0)
                     {
                         Game.CurrentGameState = GameState.GameOver;
                     }
@@ -75,18 +74,18 @@ namespace SpaceInvaders
                 // Check for collision between enemies
                 foreach (Enemy otherEnemy in enemySpawner.Enemies)
                 {
-                    if (isColliding(enemy, otherEnemy))
+                    if (IsColliding(enemy, otherEnemy))
                     {
-                        enemy.handleEnemyCollision(otherEnemy);
-                        otherEnemy.handleEnemyCollision(enemy);
+                        enemy.HandleEnemyCollision(otherEnemy);
+                        otherEnemy.HandleEnemyCollision(enemy);
                     }
                 }
             }
             foreach (Booster booster in boosterSpawner.Boosters)
             {
-                if (isColliding(booster, player))
+                if (IsColliding(booster, Player))
                 {
-                    player.consumeBooster(booster);
+                    Player.ConsumeBooster(booster);
                     booster.shouldRemove = true;
                 }
             }
@@ -94,19 +93,19 @@ namespace SpaceInvaders
 
         public void Update(KeyboardState keyboardState, MouseState mouseState, GameTime gameTime)
         {
-            player.Update(keyboardState, mouseState, gameTime);
+            Player.Update(keyboardState, mouseState, gameTime);
 
-            if (enemySpawner.canSpawn(gameTime))
+            if (enemySpawner.CanSpawn(gameTime))
             {
                 int maxWaveSize;
-                if (player.Score < 150)
+                if (Player.Score < 150)
+                    maxWaveSize = 7;
+                else if (Player.Score < 350)
                     maxWaveSize = 10;
-                else if (player.Score < 350)
+                else if (Player.Score < 450)
                     maxWaveSize = 15;
-                else if (player.Score < 450)
-                    maxWaveSize = 20;
                 else
-                    maxWaveSize = 25;
+                    maxWaveSize = 20;
 
                 int waveSize = rand.Next(maxWaveSize);
                 for (int i = 0; i <= waveSize; i++)
@@ -115,19 +114,19 @@ namespace SpaceInvaders
                 }
             }
 
-            if (boosterSpawner.canSpawn(gameTime))
+            if (boosterSpawner.CanSpawn(gameTime))
             {
                 boosterSpawner.Spawn();
             }
 
-            foreach (Shot shot in player.Shots)
+            foreach (Shot shot in Player.Shots)
             {
                 shot.Update();
             }
 
             foreach (Enemy enemy in enemySpawner.Enemies)
             {
-                enemy.GetPath(player.Position);
+                enemy.GetPath(Player.Position);
                 enemy.Update(gameTime);
             }
             CheckCollisions();
@@ -135,27 +134,27 @@ namespace SpaceInvaders
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            player.Draw(spriteBatch);
+            Player.Draw(spriteBatch);
 
-            if (player.AvailableHearts != 0)
+            if (Player.AvailableHearts != 0)
             {
-                foreach (Heart heart in player.Hearts)
+                foreach (Heart heart in Player.Hearts)
                 {
                     heart.Draw(spriteBatch);
                 }
             }
 
-            if (player.Shots.Count != 0)
+            if (Player.Shots.Count != 0)
             {
                 HashSet<Shot> toRemove = new HashSet<Shot>();
-                foreach (Shot shot in player.Shots)
+                foreach (Shot shot in Player.Shots)
                 {
                     if (shot.shouldRemove)
                         toRemove.Add(shot);
                     else
                         shot.Draw(spriteBatch);
                 }
-                player.Shots.RemoveAll(toRemove.Contains);
+                Player.Shots.RemoveAll(toRemove.Contains);
             }
 
             if (enemySpawner.Enemies.Count != 0)
@@ -184,7 +183,7 @@ namespace SpaceInvaders
                 boosterSpawner.Boosters.RemoveAll(toRemove.Contains);
             }
 
-            string score = "Score:" + player.Score;
+            string score = "Score:" + Player.Score;
             float textWidth = Images.Font.MeasureString(score).X;
             Vector2 pos = new Vector2(Game.self.gameWidth - textWidth - 5, 5);
             spriteBatch.DrawString(Images.Font, score, pos, Color.White);

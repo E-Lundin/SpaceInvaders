@@ -7,7 +7,6 @@ namespace SpaceInvaders
 {
     static class GameOverScreen
     {
-
         public static void Update(KeyboardState keyboardState, int playerScore)
         {
             if (!Game.HasLoggedScore)

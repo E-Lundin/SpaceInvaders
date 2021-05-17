@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -9,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
-    class Player: Entity
+    class Player : Entity
     {
         private int _availableHearts;
         private int _vel = 5;
@@ -19,7 +18,7 @@ namespace SpaceInvaders
         private TimeSpan lastPlayerShot;
         public TimeSpan ShootInterval = TimeSpan.FromMilliseconds(100);
         static Random rand = new Random();
-           
+
 
         // Boosters
         private float canonSpeedBoosterTimer;
@@ -51,7 +50,7 @@ namespace SpaceInvaders
             }
             else
             {
-                imageName =  "default";
+                imageName = "default";
             }
 
             return imageName switch
@@ -66,7 +65,8 @@ namespace SpaceInvaders
 
         public int AvailableHearts
         {
-            get {
+            get
+            {
                 int available = 0;
                 foreach (Heart heart in Hearts)
                 {
@@ -86,7 +86,7 @@ namespace SpaceInvaders
             set { _score = value; }
         }
 
-        public bool canShoot(GameTime gameTime)
+        public bool CanShoot(GameTime gameTime)
         {
             bool canShoot = gameTime.TotalGameTime - (TimeSpan)lastPlayerShot >= ShootInterval;
 
@@ -152,7 +152,6 @@ namespace SpaceInvaders
 
             }
         }
-
         public void CanonSpeedBooster()
         {
             canonSpeedBoosterTimer = 4f;
@@ -178,9 +177,9 @@ namespace SpaceInvaders
             }
         }
 
-        public void consumeBooster(Booster booster)
+        public void ConsumeBooster(Booster booster)
         {
-            switch (booster.type)
+            switch (booster.Type)
             {
                 case (BoosterType.AdditionalHeart):
                     AddHeart();
@@ -197,7 +196,7 @@ namespace SpaceInvaders
             }
             return;
         }
-        
+
         public void AddPoints(int points)
         {
             Score += points;
@@ -227,8 +226,8 @@ namespace SpaceInvaders
             invincibleBoosterTimer = 0f;
             InvincibleBoosterActive = false;
 
-    }
-        private void enforceBorder()
+        }
+        private void EnforceBorder()
         {
             // Assert position
             if (Position.X >= (Game.self.gameWidth - image.Width))
@@ -253,7 +252,7 @@ namespace SpaceInvaders
 
             if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
                 Position.X += _vel;
-            enforceBorder();
+            EnforceBorder();
         }
 
         public void HandleBoosters(GameTime gameTime)
@@ -301,7 +300,7 @@ namespace SpaceInvaders
             HandleBoosters(gameTime);
 
             Vector2 aim = GetAim(mouseState);
-            if (aim.LengthSquared() > 0 && canShoot(gameTime))
+            if (aim.LengthSquared() > 0 && CanShoot(gameTime))
             {
                 float aimAngle = (float)Math.Atan2(aim.Y, aim.X);
                 Quaternion aimQuat = Quaternion.CreateFromYawPitchRoll(0, 0, aimAngle);

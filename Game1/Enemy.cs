@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
@@ -11,18 +8,22 @@ namespace SpaceInvaders
         Seeker = 0,
         Wanderer,
     }
-    class Enemy: Entity
+    class Enemy : Entity
     {
-        private float DisabledTimer = 0.3f;
+        private float disabledTimer = 0.3f;
         private Random rand = new Random();
         public bool isDisabled = true;
-        public EnemyType type;
         private float newPathTimer;
         private Vector2 oldPath;
-
-        public Enemy(Vector2 pos, EnemyType _type)
+        private readonly EnemyType _type;
+        public EnemyType Type
         {
-            type = _type;
+            get { return _type; }
+        }
+
+        public Enemy(Vector2 pos, EnemyType type)
+        {
+            _type = type; ;
             switch (type)
             {
                 case (EnemyType.Seeker):
@@ -35,7 +36,7 @@ namespace SpaceInvaders
             Position = pos;
         }
 
-        private Vector2 getRandomLocation()
+        private Vector2 GetRandomLocation()
         {
             int X = rand.Next(Game.self.gameWidth);
             int Y = rand.Next(Game.self.gameHeight);
@@ -43,7 +44,7 @@ namespace SpaceInvaders
             return pos;
         }
 
-        private bool shouldGetNewPath(GameTime gameTime)
+        private bool ShouldGetNewPath(GameTime gameTime)
         {
             newPathTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (newPathTimer <= 0f)
@@ -57,9 +58,9 @@ namespace SpaceInvaders
         private void RandomMovement(GameTime gameTime)
         {
             Vector2 path;
-            if (oldPath == null || shouldGetNewPath(gameTime))
+            if (oldPath == null || ShouldGetNewPath(gameTime))
             {
-                path = getRandomLocation() - Position;
+                path = GetRandomLocation() - Position;
                 if (path != Vector2.Zero)
                     path.Normalize();
                 oldPath = path;
@@ -74,7 +75,7 @@ namespace SpaceInvaders
         // Get path to the PlayerShip
         public void GetPath(Vector2 playerPosition)
         {
-            if (type is EnemyType.Wanderer)
+            if (_type is EnemyType.Wanderer)
             {
                 return;
             }
@@ -98,7 +99,7 @@ namespace SpaceInvaders
             return collides;
         }
 
-        public void handleEnemyCollision(Enemy otherEnemy)
+        public void HandleEnemyCollision(Enemy otherEnemy)
         {
             Vector2 distance = Position - otherEnemy.Position;
             Velocity += 10 * distance / (distance.LengthSquared() + 1);
@@ -108,12 +109,11 @@ namespace SpaceInvaders
         {
             if (isDisabled)
             {
-                DisabledTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (DisabledTimer <= 0f)
+                disabledTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (disabledTimer <= 0f)
                 {
                     isDisabled = false;
                 }
-
             }
 
         }
@@ -121,7 +121,7 @@ namespace SpaceInvaders
         {
             DisabledCooldown(gameTime);
 
-            switch (type)
+            switch (_type)
             {
                 case (EnemyType.Seeker):
                     if (!Collision())

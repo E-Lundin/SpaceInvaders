@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace SpaceInvaders
 {
@@ -91,6 +89,7 @@ namespace SpaceInvaders
                 writer.Close();
             }
         }
+
         public void LogScore(int score)
         {
             int minScore;

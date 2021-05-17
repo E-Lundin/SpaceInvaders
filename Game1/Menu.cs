@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -22,8 +21,8 @@ namespace SpaceInvaders
         private MenuState currentMenuState = MenuState.Menu;
         public KeyboardState CurrentState { get; set; }
         public KeyboardState LastState { get; set; }
-        private HighScoreScreen Highscores = new HighScoreScreen();
-        private CharacterCustomization CharacterScreen = new CharacterCustomization();
+        private HighScoreScreen highscores = new HighScoreScreen();
+        private CharacterCustomization characterScreen = new CharacterCustomization();
         public static Menu self;
 
         public Menu()
@@ -79,7 +78,7 @@ namespace SpaceInvaders
                     {
                         currentMenuState = MenuState.Menu;
                     }
-                    CharacterScreen.Update(keyboardState, mouseState, gameTime);
+                    characterScreen.Update(keyboardState, mouseState, gameTime);
                     break;
             }
         }
@@ -106,12 +105,13 @@ namespace SpaceInvaders
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            switch (currentMenuState) {
+            switch (currentMenuState)
+            {
                 case MenuState.Menu:
                     foreach (MenuChoice choice in MenuChoices)
                     {
 
-                        Color color = choice.Selected ? Color.Yellow: Color.White;
+                        Color color = choice.Selected ? Color.Yellow : Color.White;
                         spriteBatch.DrawString(Images.MenuFont, choice.Text, choice.Position, color);
                     }
                     break;
@@ -125,11 +125,11 @@ namespace SpaceInvaders
                     KeyboardState keyboardState = Keyboard.GetState();
                     LastState = CurrentState;
                     CurrentState = keyboardState;
-                    Highscores.Draw(spriteBatch);
+                    highscores.Draw(spriteBatch);
                     break;
 
                 case MenuState.Character:
-                    CharacterScreen.Draw(spriteBatch);
+                    characterScreen.Draw(spriteBatch);
                     break;
 
                 case MenuState.Quit:

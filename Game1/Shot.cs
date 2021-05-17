@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using System.Diagnostics;
 
 namespace SpaceInvaders
 {
-    class Shot: Entity
+    class Shot : Entity
     {
         public Shot(Vector2 pos, Vector2 velocity)
         {
@@ -31,7 +27,8 @@ namespace SpaceInvaders
 
         public void Update()
         {
-            if (!Collision()){
+            if (!Collision())
+            {
                 if (Velocity.LengthSquared() > 0)
                     Orientation = (float)Math.Atan2(Velocity.Y, Velocity.X);
                 Position += Velocity;

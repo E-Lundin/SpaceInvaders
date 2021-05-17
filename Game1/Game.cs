@@ -85,7 +85,7 @@ namespace SpaceInvaders
                     entityManager.Update(keyboardState, mouseState, gameTime);
                     break;
                 case GameState.GameOver:
-                    GameOverScreen.Update(keyboardState, entityManager.player.Score);
+                    GameOverScreen.Update(keyboardState, entityManager.Player.Score);
                     break;
                 case GameState.Menu:
                     GameMenu.Update(keyboardState, mouseState, gameTime);
@@ -105,7 +105,7 @@ namespace SpaceInvaders
                     entityManager.Draw(_spriteBatch);
                     break;
                 case GameState.GameOver:
-                    GameOverScreen.Draw(_spriteBatch, entityManager.player.Score);
+                    GameOverScreen.Draw(_spriteBatch, entityManager.Player.Score);
                     break;
                 case GameState.Menu:
                     GameMenu.Draw(_spriteBatch);

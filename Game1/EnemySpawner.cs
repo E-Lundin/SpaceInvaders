@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using System.Diagnostics;
 
 namespace SpaceInvaders
 {
@@ -13,10 +10,11 @@ namespace SpaceInvaders
         private Random random = new Random();
         private TimeSpan lastEnemySpawn;
         public TimeSpan SpawnInterval = TimeSpan.FromSeconds(3);
+        private double wandererChance = 0.3;
 
         public EnemySpawner() { }
 
-        private Vector2 getRandomLocation()
+        private Vector2 GetRandomLocation()
         {
             int X = random.Next(Game.self.gameWidth);
             int Y = random.Next(Game.self.gameHeight);
@@ -30,11 +28,12 @@ namespace SpaceInvaders
             Enemies.Clear();
         }
 
-        public bool canSpawn(GameTime gameTime)
+        public bool CanSpawn(GameTime gameTime)
         {
             bool canSpawn = gameTime.TotalGameTime - (TimeSpan)lastEnemySpawn >= SpawnInterval;
             // Increase difficulty TODO: Player Score or GameTime?
-            if (SpawnInterval.TotalMilliseconds > 500) {
+            if (SpawnInterval.TotalMilliseconds > 500)
+            {
                 SpawnInterval = SpawnInterval.Subtract(TimeSpan.FromMilliseconds(0.5));
             }
 
@@ -48,9 +47,14 @@ namespace SpaceInvaders
 
         public void Spawn()
         {
-            int type = random.Next(2);
-            Vector2 position = getRandomLocation();
-            Enemy enemy = new Enemy(position, (EnemyType)type);
+            EnemyType type;
+            if (wandererChance > random.NextDouble())
+                type = EnemyType.Wanderer;
+            else
+                type = EnemyType.Seeker;
+
+            Vector2 position = GetRandomLocation();
+            Enemy enemy = new Enemy(position, type);
             Enemies.Add(enemy);
         }
 

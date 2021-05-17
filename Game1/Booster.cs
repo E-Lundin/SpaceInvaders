@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
 
 namespace SpaceInvaders
 {
@@ -17,10 +13,15 @@ namespace SpaceInvaders
     }
     class Booster : Entity
     {
-        public BoosterType type;
-        public Booster(Vector2 pos, BoosterType _type)
+        private readonly BoosterType _type;
+        public BoosterType Type
         {
-            type = _type;
+            get { return _type; }
+        }
+
+        public Booster(Vector2 pos, BoosterType type)
+        {
+            _type = type;
             switch (type)
             {
                 case (BoosterType.AdditionalHeart):

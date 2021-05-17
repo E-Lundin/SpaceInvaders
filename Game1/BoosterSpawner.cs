@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using System.Diagnostics;
 
 namespace SpaceInvaders
 {
@@ -13,8 +10,8 @@ namespace SpaceInvaders
         public List<Booster> Boosters = new List<Booster>();
         private Random random = new Random();
         private TimeSpan lastBoosterSpawn;
-        public TimeSpan SpawnInterval = TimeSpan.FromSeconds(7);
-        private double SpawnChance = 0.2;
+        private double spawnChance = 0.2;
+        private TimeSpan spawnInterval = TimeSpan.FromSeconds(7);
 
         public BoosterSpawner() { }
         private Vector2 getRandomLocation()
@@ -26,22 +23,22 @@ namespace SpaceInvaders
         }
         public void Reset()
         {
-            SpawnInterval = TimeSpan.FromSeconds(3);
+            spawnInterval = TimeSpan.FromSeconds(3);
             lastBoosterSpawn = TimeSpan.Zero;
-            SpawnChance = 0.2;
+            spawnChance = 0.2;
             Boosters.Clear();
         }
 
-        public bool canSpawn(GameTime gameTime)
+        public bool CanSpawn(GameTime gameTime)
         {
             // Spawn interval, with a increasing probability to spawn a Booster.
-            bool canSpawn = gameTime.TotalGameTime - (TimeSpan)lastBoosterSpawn >= SpawnInterval
-                && (SpawnChance > random.NextDouble());
+            bool canSpawn = gameTime.TotalGameTime - (TimeSpan)lastBoosterSpawn >= spawnInterval
+                && (spawnChance > random.NextDouble());
 
-            if (SpawnChance < 0.9)
+            if (spawnChance < 0.9)
             {
-                //SpawnInterval = SpawnInterval.Subtract(TimeSpan.FromMilliseconds(0.1));
-                SpawnChance += 0.00001;
+                //spawnInterval = spawnInterval.Subtract(TimeSpan.FromMilliseconds(0.1));
+                spawnChance += 0.00001;
             }
 
             if (canSpawn)

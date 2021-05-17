@@ -2,8 +2,6 @@
 
 namespace SpaceInvaders
 {
-
-    //TODO add more BoosterTypes
     public enum BoosterType
     {
         AdditionalHeart = 0,
@@ -11,6 +9,7 @@ namespace SpaceInvaders
         FasterShip,
         Invincible
     }
+
     class Booster : Entity
     {
         private readonly BoosterType _type;

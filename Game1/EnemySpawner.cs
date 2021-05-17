@@ -14,6 +14,9 @@ namespace SpaceInvaders
 
         public EnemySpawner() { }
 
+        /// <summary>
+        /// Returns a random spawn location
+        /// </summary>
         private Vector2 GetRandomLocation()
         {
             int X = random.Next(Game.self.gameWidth);
@@ -21,6 +24,10 @@ namespace SpaceInvaders
             Vector2 pos = new Vector2(X, Y);
             return pos;
         }
+
+        /// <summary>
+        /// Resets the state of the EnemySpawner
+        /// </summary>
         public void Reset()
         {
             SpawnInterval = TimeSpan.FromSeconds(3);
@@ -28,6 +35,10 @@ namespace SpaceInvaders
             Enemies.Clear();
         }
 
+        /// <summary>
+        /// Determines whether an enemy can spawn
+        /// </summary>
+        /// <param name="gameTime"></param>
         public bool CanSpawn(GameTime gameTime)
         {
             bool canSpawn = gameTime.TotalGameTime - (TimeSpan)lastEnemySpawn >= SpawnInterval;

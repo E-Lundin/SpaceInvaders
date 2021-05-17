@@ -64,6 +64,10 @@ namespace SpaceInvaders
             GameMenu = new Menu();
         }
 
+
+        /// <summary>
+        /// Resets the state of the Game
+        /// </summary>
         public void Reset()
         {
             // Update Highscores

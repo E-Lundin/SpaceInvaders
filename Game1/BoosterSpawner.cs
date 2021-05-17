@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 
 namespace SpaceInvaders
 {
-    //PowerUp p = new PowerUp((PowerUpType)type, this);
     class BoosterSpawner
     {
         public List<Booster> Boosters = new List<Booster>();
@@ -14,13 +13,21 @@ namespace SpaceInvaders
         private TimeSpan spawnInterval = TimeSpan.FromSeconds(7);
 
         public BoosterSpawner() { }
-        private Vector2 getRandomLocation()
+
+        /// <summary>
+        /// Returns a random spawn location
+        /// </summary>
+        private Vector2 GetRandomLocation()
         {
             int X = random.Next(Game.self.gameWidth - 15);
             int Y = random.Next(Game.self.gameHeight - 15);
             Vector2 pos = new Vector2(X, Y);
             return pos;
         }
+
+        /// <summary>
+        /// Resets the state of the BoosterSpawner
+        /// </summary>
         public void Reset()
         {
             spawnInterval = TimeSpan.FromSeconds(3);
@@ -29,6 +36,10 @@ namespace SpaceInvaders
             Boosters.Clear();
         }
 
+        /// <summary>
+        /// Determines whether a booster can spawn
+        /// </summary>
+        /// <param name="gameTime"></param>
         public bool CanSpawn(GameTime gameTime)
         {
             // Spawn interval, with a increasing probability to spawn a Booster.
@@ -49,10 +60,13 @@ namespace SpaceInvaders
             return false;
         }
 
+        /// <summary>
+        /// Spawns a Booster of random type at a random location
+        /// </summary>
         public void Spawn()
         {
             int type = random.Next(4);
-            Vector2 position = getRandomLocation();
+            Vector2 position = GetRandomLocation();
             Booster booster = new Booster(position, (BoosterType)type);
             Boosters.Add(booster);
         }

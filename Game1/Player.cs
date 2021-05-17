@@ -203,6 +203,10 @@ namespace SpaceInvaders
             // TODO implement multiplier;
         }
 
+
+        /// <summary>
+        /// Resets the state of the Player
+        /// </summary>
         public void Reset()
         {
             // Reset hearts
@@ -227,6 +231,11 @@ namespace SpaceInvaders
             InvincibleBoosterActive = false;
 
         }
+
+        /// <summary>
+        /// Enforces the game border, keeping the player from
+        /// moving out of bounds
+        /// </summary>
         private void EnforceBorder()
         {
             // Assert position
@@ -239,6 +248,11 @@ namespace SpaceInvaders
             if (Position.Y <= 0)
                 Position.Y += _vel;
         }
+
+        /// <summary>
+        /// Moves the player according to keyboard input
+        /// </summary>
+        /// <param name="keyboardState">The current state of the keyboard</param>
         public void Move(KeyboardState keyboardState)
         {
             if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
@@ -255,6 +269,11 @@ namespace SpaceInvaders
             EnforceBorder();
         }
 
+
+        /// <summary>
+        /// Activates and handles the cooldowns of boosters
+        /// </summary>
+        /// <param name="keyboardState"></param>
         public void HandleBoosters(GameTime gameTime)
         {
             if (canonSpeedBoosterActive)
@@ -317,11 +336,21 @@ namespace SpaceInvaders
 
         }
 
+        /// <summary>
+        /// Returns a random float
+        /// </summary>
+        /// <param name="minValue">The lower bound</param>
+        /// <param name="maxValue">The upper bound</param>
         public static float NextFloat(float minValue, float maxValue)
         {
             return (float)rand.NextDouble() * (maxValue - minValue) + minValue;
         }
 
+        /// <summary>
+        /// Creates a Vector2 from an angle and magnitude
+        /// </summary>
+        /// <param name="angle">The lower bound</param>
+        /// <param name="magnitude">The upper bound</param>
         public static Vector2 FromPolar(float angle, float magnitude)
         {
             return magnitude * new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));

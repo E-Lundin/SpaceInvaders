@@ -55,6 +55,11 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Determiens if the user has a sufficient highscore for the selected skin 
+        /// </summary>
+        /// <param name="neededPoints">The needed points to unlock the skin</param>
+
         private bool SufficientPoints(int neededPoints)
         {
             int? highscore = HighScoreScreen.BiggestHighScore;
@@ -64,6 +69,10 @@ namespace SpaceInvaders
                 return highscore >= neededPoints;
         }
 
+        /// <summary>
+        /// Changes the image of the `Select` button.
+        /// </summary>
+        /// <param name="neededPoints">The needed points to unlock the skin</param>
         private void UpdateButton(int neededPoints)
         {
             pointsReq = neededPoints.ToString();
@@ -79,6 +88,9 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Toggles the previous choice 
+        /// </summary>
         private void PrevChoice()
         {
             int selectedIndex = skins.IndexOf(skins.First(s => s.Selected));
@@ -92,6 +104,9 @@ namespace SpaceInvaders
             UpdateButton(skin.NeededPoints);
         }
 
+        /// <summary>
+        /// Toggles the next choice 
+        /// </summary>
         private void NextChoice()
         {
             int selectedIndex = skins.IndexOf(skins.First(s => s.Selected));
@@ -104,6 +119,9 @@ namespace SpaceInvaders
             UpdateButton(skin.NeededPoints);
         }
 
+        /// <summary>
+        /// Saves the selected skin to `skin.txt` 
+        /// </summary>
         private void SaveSkin()
         {
             Skin selectedSkin = skins.First(s => s.Selected);

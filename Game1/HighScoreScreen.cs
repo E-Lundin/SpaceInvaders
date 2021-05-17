@@ -61,6 +61,9 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Loads the saved highscores, if available
+        /// </summary>
         public void LoadHighScores()
         {
             var serializer = new XmlSerializer(HighScores.GetType());
@@ -79,6 +82,9 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Writes the current highscores to `highscores.xml`
+        /// </summary>
         public void SaveHighScores()
         {
             using (XmlWriter writer = XmlWriter.Create("highscores.xml"))
@@ -90,6 +96,11 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Saves the given score to the list of highscores.
+        /// If there are already five entries, the smallest is replaced.
+        /// </summary>
+        /// <param name="score">The score to save</param>
         public void LogScore(int score)
         {
             int minScore;

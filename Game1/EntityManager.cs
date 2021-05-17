@@ -22,6 +22,10 @@ namespace SpaceInvaders
             enemySpawner = new EnemySpawner();
             boosterSpawner = new BoosterSpawner();
         }
+
+        /// <summary>
+        /// Resets the state of the EntityManager
+        /// </summary>
         public void Reset()
         {
             // Reset hearts, score & Shots
@@ -36,6 +40,13 @@ namespace SpaceInvaders
             Player.image = skin;
         }
 
+
+        /// <summary>
+        /// Determines if two entities are colliding
+        /// </summary>
+        /// <param name="e1">First entity</param>
+        /// <param name="e2">Second entity</param>
+
         private bool IsColliding(Entity e1, Entity e2)
         {
             float radius = e1.Radius + e2.Radius;
@@ -44,9 +55,11 @@ namespace SpaceInvaders
             return activeEntities && overlapping;
         }
 
+        /// <summary>
+        /// Checks for collisions between all currently active entitites
+        /// </summary>
         private void CheckCollisions()
         {
-            // Check for collisions between all currently active entitites
             foreach (Enemy enemy in enemySpawner.Enemies)
             {
                 // Check for collision with Bullets

@@ -24,6 +24,11 @@ namespace SpaceInvaders
         public static SpriteFont Font { get; private set; }
         public static SpriteFont MenuFont { get; private set; }
 
+
+        /// <summary>
+        /// Loads all assets for the game
+        /// </summary>
+        /// <param name="content"></param>
         public static void Load(ContentManager content)
         {
             Ship = content.Load<Texture2D>("ship");

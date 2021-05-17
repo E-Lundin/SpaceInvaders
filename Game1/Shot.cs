@@ -15,6 +15,10 @@ namespace SpaceInvaders
 
         }
 
+        /// <summary>
+        /// Determines if the bullet has traveled outside
+        /// of the game's Viewport.
+        /// </summary>
         private bool Collision()
         {
             bool collides = false;

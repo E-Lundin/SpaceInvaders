@@ -42,6 +42,10 @@ namespace SpaceInvaders
                 startY += 70;
             }
         }
+
+        /// <summary>
+        /// Determines if a key was pressed
+        /// </summary>
         public bool KeyPressed(Keys key)
         {
             return CurrentState.IsKeyDown(key) && !LastState.IsKeyDown(key);

@@ -12,14 +12,13 @@ namespace SpaceInvaders
             image = Images.Shot;
             Orientation = (float)Math.Atan2(velocity.Y, velocity.X);
             Radius = 8;
-
         }
 
         /// <summary>
         /// Determines if the bullet has traveled outside
         /// of the game's Viewport.
         /// </summary>
-        private bool Collision()
+        public bool Collision()
         {
             bool collides = false;
             if (!Game.gameSize.Bounds.Contains(Position.ToPoint()))

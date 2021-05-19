@@ -58,7 +58,7 @@ namespace SpaceInvaders
         /// <summary>
         /// Determiens if the user has a sufficient highscore for the selected skin 
         /// </summary>
-        /// <param name="neededPoints">The needed points to unlock the skin</param>
+        /// <param name="neededPoints">The points needed to unlock the skin</param>
 
         private bool SufficientPoints(int neededPoints)
         {
@@ -72,7 +72,7 @@ namespace SpaceInvaders
         /// <summary>
         /// Changes the image of the `Select` button.
         /// </summary>
-        /// <param name="neededPoints">The needed points to unlock the skin</param>
+        /// <param name="neededPoints">The points needed to unlock the skin</param>
         private void UpdateButton(int neededPoints)
         {
             pointsReq = neededPoints.ToString();

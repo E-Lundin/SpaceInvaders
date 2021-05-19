@@ -38,12 +38,15 @@ namespace SpaceInvaders
         public void Draw(SpriteBatch spriteBatch)
         {
 
-            Vector2 titleSize = Images.MenuFont.MeasureString("Leaderboard");
-            Vector2 pos = new Vector2(Game.gameSize.Width / 2 - titleSize.X / 2, 5);
-            spriteBatch.DrawString(Images.MenuFont, "Leaderboard", pos, Color.Lime);
+            float titleSize = Images.MenuFont.MeasureString("Leaderboard").X;
+            float goBackSize = Images.Font.MeasureString("Press Enter to go back").Y;
+            Vector2 pos = new Vector2(Game.gameSize.Width / 2 - titleSize / 2, 5);
+            Vector2 goBackPos = new Vector2(5, Game.gameSize.Height - goBackSize);
 
+            spriteBatch.DrawString(Images.MenuFont, "Leaderboard", pos, Color.Lime);
             spriteBatch.DrawString(Images.MenuFont, "#", new Vector2(300, 100), Color.White);
             spriteBatch.DrawString(Images.MenuFont, "Score", new Vector2(450, 100), Color.White);
+            spriteBatch.DrawString(Images.Font, "Press Enter to go back", goBackPos, Color.White);
 
             if (!HighScores.Any())
             {

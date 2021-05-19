@@ -133,14 +133,17 @@ namespace SpaceInvaders
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            float titleSize = Images.MenuFont.MeasureString("CHARACTER CUSTOMIZATION").X;
+            float goBackSize = Images.Font.MeasureString("Press Enter to go back").Y;
+            Vector2 pos = new Vector2(Game.gameSize.Width / 2 - titleSize / 2, 5);
+            Vector2 goBackPos = new Vector2(5, Game.gameSize.Height - goBackSize);
             var image = skins.First(c => c.Selected).Image;
             ship.image = image;
-            ship.Draw(spriteBatch);
 
-            Vector2 titleSize = Images.MenuFont.MeasureString("CHARACTER CUSTOMIZATION");
-            Vector2 pos = new Vector2(Game.gameSize.Width / 2 - titleSize.X / 2, 5);
+            ship.Draw(spriteBatch);
             spriteBatch.DrawString(Images.MenuFont, "CHARACTER CUSTOMIZATION", pos, Color.Lime);
             spriteBatch.DrawString(Images.MenuFont, String.Format("POINTS TO UNLOCK: {0}", pointsReq), pos + new Vector2(0, 40), Color.White);
+            spriteBatch.DrawString(Images.Font, "Press Enter to go back", goBackPos, Color.White);
             foreach (Button button in buttons)
             {
                 button.Draw(spriteBatch);

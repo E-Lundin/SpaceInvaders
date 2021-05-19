@@ -114,7 +114,6 @@ namespace SpaceInvaders
                 case MenuState.Menu:
                     foreach (MenuChoice choice in MenuChoices)
                     {
-
                         Color color = choice.Selected ? Color.Yellow : Color.White;
                         spriteBatch.DrawString(Images.MenuFont, choice.Text, choice.Position, color);
                     }

@@ -36,13 +36,14 @@ namespace SpaceInvadersTests
             _ = new Game();
             Game.gameSize = new Viewport(0, 0, 800, 480);
             Vector2 position = new Vector2(900, 500);
-            Shot bullet = new Shot(position, position);
+            Vector2 velocity = new Vector2(150, 150);
+            Shot bullet = new Shot(position, velocity);
 
-            // Check if it is detected as ouf of bounds
-            bool shouldRemove = bullet.Collision();
+            // Update the position of the entity
+            bullet.Update();
 
             // Assert
-            Assert.IsTrue(shouldRemove);
+            Assert.IsTrue(bullet.shouldRemove);
         }
     }
 }
